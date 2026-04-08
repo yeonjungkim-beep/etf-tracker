@@ -241,38 +241,57 @@ async function fetchPricesFromAPI() {
   apiState.message = '가격 조회 중...';
   renderPortfolio();
 
-  // 조회할 종목명 수집
   const names = [...new Set(
     brokers.flatMap(b => b.etfs.map(e => e.name.trim())).filter(Boolean)
   )];
 
   const encodedNames = encodeURIComponent(names.join('|'));
-  const url = `${apiState.url.trim()}?names=${encodedNames}`;
+  const callbackName = 'etfCallback_' + Date.now();
+  const url = `${apiState.url.trim()}?names=${encodedNames}&callback=${callbackName}`;
 
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        delete window[callbackName];
+        reject(new Error('시간 초과 (30초)'));
+      }, 30000);
 
-    if (!data.success) throw new Error('API 응답 오류');
+      window[callbackName] = (data) => {
+        clearTimeout(timeout);
+        delete window[callbackName];
+        if (!data.success) { reject(new Error('API 응답 오류')); return; }
 
-    let updated = 0, failed = 0;
-    brokers.forEach(b => {
-      b.etfs.forEach(e => {
-        const info = data.prices[e.name.trim()];
-        if (info && info.price) {
-          e.pr = String(info.price);
-          updated++;
-        } else {
-          failed++;
-        }
-      });
+        let updated = 0, failed = 0;
+        brokers.forEach(b => {
+          b.etfs.forEach(e => {
+            const info = data.prices[e.name.trim()];
+            if (info && info.price) {
+              e.pr = String(info.price);
+              updated++;
+            } else {
+              failed++;
+            }
+          });
+        });
+
+        apiState.status = 'success';
+        apiState.lastUpdated = data.updatedAt || new Date().toLocaleString('ko-KR');
+        apiState.message = `✅ ${updated}개 업데이트 완료${failed > 0 ? ` (${failed}개 실패)` : ''}`;
+        renderAll();
+        resolve();
+      };
+
+      // JSONP 스크립트 태그 삽입
+      const script = document.createElement('script');
+      script.src = url;
+      script.onerror = () => {
+        clearTimeout(timeout);
+        delete window[callbackName];
+        reject(new Error('스크립트 로드 실패'));
+      };
+      document.head.appendChild(script);
+      setTimeout(() => script.remove(), 35000);
     });
-
-    apiState.status = 'success';
-    apiState.lastUpdated = data.updatedAt || new Date().toLocaleString('ko-KR');
-    apiState.message = `✅ ${updated}개 업데이트 완료${failed > 0 ? ` (${failed}개 실패)` : ''}`;
-    renderAll();
 
   } catch(e) {
     apiState.status = 'error';
