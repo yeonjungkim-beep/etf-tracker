@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>10억 자산 목표 달성 시뮬레이터</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: #f5f5f5;
+            padding: 12px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .portfolio-section {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .portfolio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .portfolio-header h2 {
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            margin: 0;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .reset-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            border: 0.5px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #333;
+            white-space: nowrap;
+        }
+        
+        .reset-btn:active {
+            background: #f0f0f0;
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .portfolio-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .portfolio-item p {
+            font-size: 11px;
+            color: #666;
+            margin: 0 0 6px;
+            line-height: 1.3;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 4px;
+            cursor: pointer;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #ddd;
+            border-radius: 2px;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #0066cc;
+            cursor: pointer;
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #0066cc;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .portfolio-value {
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            margin: 0;
+        }
+        
+        .portfolio-rate {
+            font-size: 10px;
+            color: #666;
+            margin: 2px 0 0;
+        }
+        
+        .weighted-rate-box {
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+        
+        .weighted-rate-info {
+            flex: 1;
+        }
+        
+        .weighted-rate-label {
+            font-size: 12px;
+            color: #666;
+            margin: 0 0 4px;
+        }
+        
+        .weighted-rate-value {
+            font-size: 22px;
+            font-weight: 500;
+            margin: 0;
+            color: #0066cc;
+        }
+        
+        .age-select-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .age-select-wrapper label {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        select {
+            padding: 6px 8px;
+            font-size: 12px;
+            border: 0.5px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            color: #333;
+            cursor: pointer;
+        }
+        
+        .age-recommendation {
+            font-size: 11px;
+            color: #0066cc;
+            line-height: 1.3;
+            min-height: 20px;
+        }
+        
+        .inputs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-box {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 0.8rem;
+        }
+        
+        .input-box label {
+            font-size: 11px;
+            color: #666;
+            margin: 0 0 6px;
+            display: block;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 6px 4px;
+            border: 0.5px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        
+        .inflation-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .inflation-control input[type="range"] {
+            flex: 1;
+        }
+        
+        .withdrawal-section {
+            background: #fff9e6;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .withdrawal-section h3 {
+            font-size: 12px;
+            font-weight: 600;
+            color: #b8860b;
+            margin: 0 0 1rem;
+        }
+        
+        .withdrawal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        
+        .withdrawal-grid .input-box {
+            background: white;
+            border: 0.5px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .milestone-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .milestone-box {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 0.8rem;
+        }
+        
+        .milestone-label {
+            font-size: 11px;
+            color: #666;
+            margin: 0 0 6px;
+        }
+        
+        .milestone-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            margin: 0;
+        }
+        
+        .milestone-desc {
+            font-size: 10px;
+            color: #666;
+            margin: 2px 0 0;
+        }
+        
+        .final-results {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .result-box {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 0.8rem;
+        }
+        
+        .result-label {
+            font-size: 11px;
+            color: #666;
+            margin: 0 0 6px;
+        }
+        
+        .result-value {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0;
+            color: #0066cc;
+        }
+        
+        .result-korean {
+            font-size: 10px;
+            color: #666;
+            margin: 2px 0 0;
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        
+        .legend-item {
+            background: white;
+            border: 0.5px solid #ddd;
+            border-radius: 8px;
+            padding: 8px;
+        }
+        
+        .legend-emoji {
+            font-size: 11px;
+            color: #666;
+            margin: 0 0 4px;
+        }
+        
+        .legend-text {
+            font-size: 11px;
+            color: #333;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="portfolio-section">
+        <div class="portfolio-header">
+            <h2>포트폴리오 구성 (30년 역사 데이터 기반, 최소 20%)</h2>
+            <button class="reset-btn" id="reset-btn">최적값 재계산</button>
+        </div>
+        
+        <div class="portfolio-grid">
+            <div class="portfolio-item">
+                <p>다우존스 (%)</p>
+                <input type="range" id="dow-weight" value="25" min="20" max="100" step="1" />
+                <p class="portfolio-value" id="dow-out">25%</p>
+                <p class="portfolio-rate">연이율 9.5%</p>
+            </div>
+            
+            <div class="portfolio-item">
+                <p>S&P 500 (%)</p>
+                <input type="range" id="sp-weight" value="45" min="20" max="100" step="1" />
+                <p class="portfolio-value" id="sp-out">45%</p>
+                <p class="portfolio-rate">연이율 11.5%</p>
+            </div>
+            
+            <div class="portfolio-item">
+                <p>나스닥 100 (%)</p>
+                <input type="range" id="nas-weight" value="30" min="20" max="100" step="1" />
+                <p class="portfolio-value" id="nas-out">30%</p>
+                <p class="portfolio-rate">연이율 14.8%</p>
+            </div>
+        </div>
+        
+        <div class="weighted-rate-box">
+            <div class="weighted-rate-info">
+                <p class="weighted-rate-label">예상 수익률 (자동 계산)</p>
+                <p class="weighted-rate-value" id="weighted-rate">11.05%</p>
+            </div>
+            
+            <div class="age-select-wrapper">
+                <label>📊 나이대</label>
+                <select id="age-select">
+                    <option value="">선택하기</option>
+                    <option value="10s">10대</option>
+                    <option value="20s">20대</option>
+                    <option value="30s">30대</option>
+                    <option value="40s" selected>40대</option>
+                    <option value="50s">50대</option>
+                </select>
+                <div class="age-recommendation" id="age-recommendation">40대: 균형형 | 위험 관리</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="inputs-grid">
+        <div class="input-box">
+            <label>초기자금 (만원)</label>
+            <input type="number" id="initial" value="40000" min="0" step="100" />
+            <p style="font-size: 10px; color: #666; margin: 2px 0 0;" id="initial-label"></p>
+        </div>
+        
+        <div class="input-box">
+            <label>물가상승률 (%)</label>
+            <div class="inflation-control">
+                <input type="checkbox" id="inflation-toggle" checked />
+                <input type="range" id="inflation" value="3" min="0" max="10" step="0.5" />
+            </div>
+            <p style="font-size: 12px; margin: 2px 0 0; color: #666;" id="inflation-out">3%</p>
+        </div>
+        
+        <div class="input-box">
+            <label>연간 추가 투자 (만원)</label>
+            <input type="number" id="annual" value="1000" min="0" step="50" />
+            <p style="font-size: 10px; color: #666; margin: 2px 0 0;" id="annual-label"></p>
+        </div>
+        
+        <div class="input-box">
+            <label>투자 기간 (년)</label>
+            <input type="number" id="period" value="10" min="0" max="60" step="1" />
+            <p style="font-size: 10px; color: #666; margin: 2px 0 0;">최대 60년</p>
+        </div>
+    </div>
+    
+    <div class="withdrawal-section">
+        <h3>💰 자금 인출 (선택사항)</h3>
+        <div class="withdrawal-grid">
+            <div class="input-box">
+                <label>인출 시작 연도</label>
+                <input type="number" id="withdrawal-start" value="0" min="0" max="60" step="1" />
+                <p style="font-size: 10px; color: #666; margin: 2px 0 0;">0 = 인출 없음</p>
+            </div>
+            
+            <div class="input-box">
+                <label>연간 인출액 (만원)</label>
+                <input type="number" id="withdrawal-amount" value="0" min="0" step="50" />
+                <p style="font-size: 10px; color: #666; margin: 2px 0 0;" id="withdrawal-label"></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="milestone-grid">
+        <div class="milestone-box">
+            <p class="milestone-label">10억 도달</p>
+            <p class="milestone-value" id="target-1b">미달</p>
+            <p class="milestone-desc" id="target-1b-label"></p>
+        </div>
+        
+        <div class="milestone-box">
+            <p class="milestone-label">50억 도달</p>
+            <p class="milestone-value" id="target-500m">미달</p>
+            <p class="milestone-desc" id="target-500m-label"></p>
+        </div>
+        
+        <div class="milestone-box">
+            <p class="milestone-label">100억 도달</p>
+            <p class="milestone-value" id="target-10b">미달</p>
+            <p class="milestone-desc" id="target-10b-label"></p>
+        </div>
+    </div>
+    
+    <div class="final-results">
+        <div class="result-box">
+            <p class="result-label">30년 후 자산 (실제가)</p>
+            <p class="result-value" id="final-30-nominal">0원</p>
+            <p class="result-korean" id="final-30-nominal-label"></p>
+        </div>
+        
+        <div class="result-box">
+            <p class="result-label">30년 후 자산 (현재가)</p>
+            <p class="result-value" id="final-30-real">0원</p>
+            <p class="result-korean" id="final-30-real-label"></p>
+        </div>
+        
+        <div class="result-box">
+            <p class="result-label">60년 후 자산 (실제가)</p>
+            <p class="result-value" id="final-nominal">0원</p>
+            <p class="result-korean" id="final-nominal-label"></p>
+        </div>
+        
+        <div class="result-box">
+            <p class="result-label">60년 후 자산 (현재가)</p>
+            <p class="result-value" id="final-real">0원</p>
+            <p class="result-korean" id="final-real-label"></p>
+        </div>
+    </div>
+    
+    <div class="chart-container">
+        <canvas id="chart"></canvas>
+    </div>
+    
+    <div class="legend">
+        <div class="legend-item">
+            <p class="legend-emoji">📊 노란선</p>
+            <p class="legend-text">실제 자산 (명목가)</p>
+        </div>
+        <div class="legend-item">
+            <p class="legend-emoji">📈 파란선</p>
+            <p class="legend-text">구매력 고려 (현재가)</p>
+        </div>
+        <div class="legend-item">
+            <p class="legend-emoji">💰 회색 선</p>
+            <p class="legend-text">누적 투자액</p>
+        </div>
+    </div>
+</div>
+
+<script>
+const dowWeight = document.getElementById('dow-weight');
+const spWeight = document.getElementById('sp-weight');
+const nasWeight = document.getElementById('nas-weight');
+const inflation = document.getElementById('inflation');
+const initial = document.getElementById('initial');
+const annual = document.getElementById('annual');
+const period = document.getElementById('period');
+const withdrawalStart = document.getElementById('withdrawal-start');
+const withdrawalAmount = document.getElementById('withdrawal-amount');
+const inflationToggle = document.getElementById('inflation-toggle');
+const resetBtn = document.getElementById('reset-btn');
+const ageSelect = document.getElementById('age-select');
+const ageRecommendation = document.getElementById('age-recommendation');
+
+const dowOut = document.getElementById('dow-out');
+const spOut = document.getElementById('sp-out');
+const nasOut = document.getElementById('nas-out');
+const weightedRate = document.getElementById('weighted-rate');
+const inflationOut = document.getElementById('inflation-out');
+const withdrawalLabel = document.getElementById('withdrawal-label');
+const final30Nominal = document.getElementById('final-30-nominal');
+const final30Real = document.getElementById('final-30-real');
+const finalNominal = document.getElementById('final-nominal');
+const finalReal = document.getElementById('final-real');
+const target1b = document.getElementById('target-1b');
+const target500m = document.getElementById('target-500m');
+const target10b = document.getElementById('target-10b');
+const initialLabel = document.getElementById('initial-label');
+const annualLabel = document.getElementById('annual-label');
+const final30NominalLabel = document.getElementById('final-30-nominal-label');
+const final30RealLabel = document.getElementById('final-30-real-label');
+const finalNominalLabel = document.getElementById('final-nominal-label');
+const finalRealLabel = document.getElementById('final-real-label');
+const target1bLabel = document.getElementById('target-1b-label');
+const target500mLabel = document.getElementById('target-500m-label');
+const target10bLabel = document.getElementById('target-10b-label');
+
+let chart = null;
+
+const baseRates = {
+  dow: 9.5,
+  sp: 11.5,
+  nas: 14.8
+};
+
+const ageRecommendations = {
+  '10s': {
+    dow: 0,
+    sp: 20,
+    nas: 80,
+    text: '10대: 극공격적 | 시간이 많음'
+  },
+  '20s': {
+    dow: 5,
+    sp: 35,
+    nas: 60,
+    text: '20대: 공격적 | 높은 수익성'
+  },
+  '30s': {
+    dow: 15,
+    sp: 40,
+    nas: 45,
+    text: '30대: 성장형 | 수익-안정 균형'
+  },
+  '40s': {
+    dow: 25,
+    sp: 45,
+    nas: 30,
+    text: '40대: 균형형 | 위험 관리'
+  },
+  '50s': {
+    dow: 40,
+    sp: 45,
+    nas: 15,
+    text: '50대: 보수형 | 안정성 중심'
+  }
+};
+
+function formatWonSimple(manwon) {
+  const won = Math.round(manwon * 10000);
+  if (won >= 1000000000000) {
+    const jo = Math.floor(won / 1000000000000);
+    const remainder = won % 1000000000000;
+    const eok = Math.floor(remainder / 100000000);
+    if (eok > 0) return jo + '조 ' + eok + '억원';
+    return jo + '조원';
+  } else if (won >= 100000000) {
+    const eok = Math.floor(won / 100000000);
+    const man = Math.floor((won % 100000000) / 10000);
+    if (man > 0) return eok + '억 ' + man.toLocaleString('ko-KR') + '만원';
+    return eok + '억원';
+  } else {
+    const man = Math.floor(won / 10000);
+    return man.toLocaleString('ko-KR') + '만원';
+  }
+}
+
+function formatKorean(manwon) {
+  const millions = Math.round(manwon);
+  if (millions >= 100000000) return (millions / 100000000).toFixed(1) + '조';
+  if (millions >= 10000) return (millions / 10000).toFixed(1) + '억';
+  if (millions >= 1000) return Math.round(millions / 1000) + '천만';
+  if (millions >= 100) return Math.round(millions / 100) + '백만';
+  return millions + '만';
+}
+
+function normalizeWeights() {
+  let dow = parseFloat(dowWeight.value) || 25;
+  let sp = parseFloat(spWeight.value) || 45;
+  let nas = parseFloat(nasWeight.value) || 30;
+  const total = dow + sp + nas;
+  if (total > 0) {
+    dow = (dow / total) * 100;
+    sp = (sp / total) * 100;
+    nas = (nas / total) * 100;
+  } else {
+    dow = sp = nas = 33.33;
+  }
+  dowOut.textContent = Math.round(dow) + '%';
+  spOut.textContent = Math.round(sp) + '%';
+  nasOut.textContent = Math.round(nas) + '%';
+  return { dow: dow / 100, sp: sp / 100, nas: nas / 100 };
+}
+
+function calculate() {
+  const weights = normalizeWeights();
+  const baseWeightedRate = weights.dow * baseRates.dow + weights.sp * baseRates.sp + weights.nas * baseRates.nas;
+  weightedRate.textContent = baseWeightedRate.toFixed(2) + '%';
+  
+  const initVal = parseFloat(initial.value) || 0;
+  const rateVal = baseWeightedRate;
+  const annualVal = parseFloat(annual.value) || 0;
+  const inflationVal = inflationToggle.checked ? parseFloat(inflation.value) || 0 : 0;
+  const periodVal = Math.min(Math.max(parseFloat(period.value) || 60, 0), 60);
+  const withdrawalStartVal = parseFloat(withdrawalStart.value) || 0;
+  const withdrawalAmountVal = parseFloat(withdrawalAmount.value) || 0;
+  
+  inflationOut.textContent = inflationVal.toFixed(1) + '%';
+  initialLabel.textContent = formatKorean(initVal);
+  annualLabel.textContent = formatKorean(annualVal);
+  withdrawalLabel.textContent = formatKorean(withdrawalAmountVal);
+  
+  const nominalData = [], realData = [], investmentData = [], labels = [];
+  let nominal = initVal, totalInvested = initVal;
+  let found1b = -1, found500m = -1, found10b = -1;
+  let nominal30 = 0, real30 = 0;
+  
+  nominalData.push(nominal);
+  realData.push(nominal);
+  investmentData.push(totalInvested);
+  labels.push(0);
+  
+  for (let y = 1; y <= 60; y++) {
+    nominal = nominal * (1 + rateVal / 100);
+    if (y <= periodVal) {
+      nominal += annualVal;
+      totalInvested += annualVal;
+    }
+    if (withdrawalStartVal > 0 && y >= withdrawalStartVal) {
+      nominal = Math.max(0, nominal - withdrawalAmountVal);
+    }
+    nominalData.push(nominal);
+    const realValue = nominal / Math.pow(1 + inflationVal / 100, y);
+    realData.push(realValue);
+    investmentData.push(totalInvested);
+    labels.push(y);
+    
+    if (y === 30) {
+      nominal30 = nominal;
+      real30 = realValue;
+    }
+    if (nominal >= 100000 && found1b === -1) found1b = y;
+    if (nominal >= 500000 && found500m === -1) found500m = y;
+    if (nominal >= 1000000 && found10b === -1) found10b = y;
+  }
+  
+  final30Nominal.textContent = formatWonSimple(nominal30);
+  final30NominalLabel.textContent = formatKorean(nominal30);
+  final30Real.textContent = formatWonSimple(real30);
+  final30RealLabel.textContent = formatKorean(real30);
+  finalNominal.textContent = formatWonSimple(nominalData[60]);
+  finalNominalLabel.textContent = formatKorean(nominalData[60]);
+  finalReal.textContent = formatWonSimple(realData[60]);
+  finalRealLabel.textContent = formatKorean(realData[60]);
+  
+  target1b.textContent = found1b >= 0 ? '✓ ' + found1b + '년' : '✗ 미달';
+  target1bLabel.textContent = found1b >= 0 ? found1b + '년 후 달성' : '60년 내 미달';
+  target500m.textContent = found500m >= 0 ? '✓ ' + found500m + '년' : '✗ 미달';
+  target500mLabel.textContent = found500m >= 0 ? found500m + '년 후 달성' : '60년 내 미달';
+  target10b.textContent = found10b >= 0 ? '✓ ' + found10b + '년' : '✗ 미달';
+  target10bLabel.textContent = found10b >= 0 ? found10b + '년 후 달성' : '60년 내 미달';
+  
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById('chart'), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '실제 자산',
+        data: nominalData,
+        borderColor: '#E8A607',
+        backgroundColor: 'rgba(232, 166, 7, 0.05)',
+        tension: 0.3,
+        borderWidth: 2.5,
+        fill: true,
+        pointRadius: 0
+      }, {
+        label: '현재가',
+        data: realData,
+        borderColor: '#0066CC',
+        backgroundColor: 'rgba(0, 102, 204, 0.05)',
+        tension: 0.3,
+        borderWidth: 2.5,
+        fill: true,
+        pointRadius: 0
+      }, {
+        label: '누적투자',
+        data: investmentData,
+        borderColor: '#888888',
+        borderDash: [5, 5],
+        borderWidth: 1.5,
+        fill: false,
+        pointRadius: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { ticks: { callback: (v) => formatKorean(v) } },
+        x: { }
+      }
+    }
+  });
+}
+
+ageSelect.addEventListener('change', (e) => {
+  const age = e.target.value;
+  if (!age) {
+    ageRecommendation.textContent = '';
+  } else {
+    const rec = ageRecommendations[age];
+    dowWeight.value = rec.dow;
+    spWeight.value = rec.sp;
+    nasWeight.value = rec.nas;
+    ageRecommendation.textContent = rec.text;
+    calculate();
+  }
+});
+
+resetBtn.addEventListener('click', () => {
+  dowWeight.value = 25;
+  spWeight.value = 45;
+  nasWeight.value = 30;
+  ageSelect.value = '40s';
+  ageRecommendation.textContent = '40대: 균형형 | 위험 관리';
+  calculate();
+});
+
+dowWeight.addEventListener('input', calculate);
+spWeight.addEventListener('input', calculate);
+nasWeight.addEventListener('input', calculate);
+inflation.addEventListener('input', () => { if (inflationToggle.checked) calculate(); });
+inflationToggle.addEventListener('change', calculate);
+initial.addEventListener('input', calculate);
+annual.addEventListener('input', calculate);
+period.addEventListener('input', calculate);
+withdrawalStart.addEventListener('input', calculate);
+withdrawalAmount.addEventListener('input', calculate);
+
+calculate();
+</script>
+</body>
+</html>
