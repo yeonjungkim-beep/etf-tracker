@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>야근 퇴직금 계산기</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+      background: #f2f2f7;
+      color: #1a1a1a;
+      min-height: 100vh;
+      padding: 1rem 0.75rem 3rem;
+    }
+    .app { max-width: 420px; margin: 0 auto; }
+
+    .total-box { border-radius: 16px; padding: 1.25rem; margin-bottom: 10px; background: #e8f0fe; border: 0.5px solid #bcd0fb; }
+    .total-lbl { font-size: 12px; color: #2a5bdb; opacity: 0.85; margin: 0 0 2px; }
+    .total-amount { font-size: 32px; font-weight: 600; color: #2a5bdb; margin: 0 0 2px; letter-spacing: -0.5px; }
+    .total-sub { font-size: 11px; color: #2a5bdb; opacity: 0.65; }
+
+    .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .stat { background: #fff; border-radius: 12px; padding: 0.75rem; border: 0.5px solid #e5e5ea; }
+    .stat-lbl { font-size: 11px; color: #888; margin: 0 0 2px; }
+    .stat-val { font-size: 17px; font-weight: 600; color: #1a1a1a; }
+
+    .card { background: #fff; border: 0.5px solid #e5e5ea; border-radius: 14px; padding: 1rem; margin-bottom: 10px; }
+    .card-title { font-size: 13px; font-weight: 600; color: #1a1a1a; margin: 0 0 10px; display: flex; align-items: center; justify-content: space-between; }
+    .save-badge { font-size: 10px; color: #aaa; font-weight: 400; }
+    .save-badge.saved { color: #22c55e; }
+
+    .field-lbl { font-size: 11px; color: #888; margin: 0 0 4px; display: block; }
+    input[type=date], input[type=number] {
+      width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 0.5px solid #ddd; font-size: 16px; color: #1a1a1a;
+      background: #f8f8f8; outline: none; -webkit-appearance: none;
+    }
+    input[type=number] { -moz-appearance: textfield; }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    .two-col:last-child { margin-bottom: 0; }
+
+    .ot-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 6px; }
+    .ot-inner { display: flex; gap: 8px; min-width: max-content; padding: 2px; }
+    .ot-col-inner {
+      background: #f2f2f7; border-radius: 12px; padding: 8px 6px;
+      border: 0.5px solid #e5e5ea;
+      display: flex; flex-direction: column; gap: 5px; align-items: center; width: 88px;
+    }
+    .ot-col.current .ot-col-inner { background: #fff8e1; border-color: #ffd54f; }
+    .ot-col.active .ot-col-inner { background: #e8f0fe; border-color: #bcd0fb; }
+    .ot-month { font-size: 10px; font-weight: 500; color: #888; text-align: center; line-height: 1.4; }
+    .ot-col.current .ot-month { color: #f57f17; }
+    .ot-col.active .ot-month { color: #2a5bdb; }
+    .ot-col input[type=number] {
+      width: 76px; text-align: center; font-size: 16px; font-weight: 500;
+      padding: 6px 4px; border-radius: 8px;
+      background: #fff; border: 0.5px solid #ddd;
+    }
+    .ot-col.current input[type=number] { border-color: #ffd54f; }
+    .ot-col.active input[type=number] { border-color: #bcd0fb; }
+    .excess { font-size: 10px; font-weight: 500; text-align: center; color: #2a5bdb; min-height: 14px; }
+    .excess.under { color: #aaa; }
+    .excess.cur { color: #f57f17; }
+
+    .detail-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; border-bottom: 0.5px solid #f0f0f0; }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-row span:first-child { color: #888; }
+    .detail-row span:last-child { font-weight: 500; }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #1c1c1e; color: #f2f2f7; }
+      .total-box { background: #1a2a4a; border-color: #2a4a8a; }
+      .total-lbl, .total-amount, .total-sub { color: #6b9ef7; }
+      .stat { background: #2c2c2e; border-color: #3a3a3c; }
+      .stat-lbl { color: #aaa; }
+      .stat-val { color: #f2f2f7; }
+      .card { background: #2c2c2e; border-color: #3a3a3c; }
+      .card-title { color: #f2f2f7; }
+      .field-lbl { color: #aaa; }
+      input[type=date], input[type=number] { background: #3a3a3c; border-color: #4a4a4c; color: #f2f2f7; }
+      .ot-col-inner { background: #3a3a3c; border-color: #4a4a4c; }
+      .ot-col.current .ot-col-inner { background: #3a2e00; border-color: #7a6000; }
+      .ot-col.active .ot-col-inner { background: #1a2a4a; border-color: #2a4a8a; }
+      .ot-month { color: #aaa; }
+      .ot-col.current .ot-month { color: #ffd54f; }
+      .ot-col.active .ot-month { color: #6b9ef7; }
+      .ot-col input[type=number] { background: #2c2c2e; border-color: #4a4a4c; color: #f2f2f7; }
+      .ot-col.current input[type=number] { border-color: #7a6000; }
+      .ot-col.active input[type=number] { border-color: #2a4a8a; }
+      .detail-row { border-bottom-color: #3a3a3c; }
+      .detail-row span:first-child { color: #aaa; }
+      .detail-row span:last-child { color: #f2f2f7; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="total-box">
+    <p class="total-lbl">야근 기반 추가 퇴직금</p>
+    <div class="total-amount" id="r-total">—</div>
+    <p class="total-sub">최근 3개월 평균 야근수당 × 근속년수</p>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><p class="stat-lbl">근속년수</p><div class="stat-val" id="r-years">—</div></div>
+    <div class="stat"><p class="stat-lbl">월 평균 야근수당</p><div class="stat-val" id="r-avg">—</div></div>
+  </div>
+
+  <div class="card" id="detailCard" style="display:none;">
+    <p class="card-title">3개월 내역</p>
+    <div id="monthDetail"></div>
+    <div style="margin-top:8px;padding-top:8px;border-top:0.5px solid #f0f0f0;">
+      <div class="detail-row"><span>공식</span><span id="r-formula">—</span></div>
+      <div class="detail-row"><span>월 평균</span><span id="r-avg2">—</span></div>
+      <div class="detail-row"><span>근속년수</span><span id="r-years2">—</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">기본 정보 <span class="save-badge" id="saveBadge"></span></p>
+    <div class="two-col">
+      <div><span class="field-lbl">입사일</span><input type="date" id="joinDate" value="2006-02-27" /></div>
+      <div><span class="field-lbl">퇴직일</span><input type="date" id="retireDate" /></div>
+    </div>
+    <div class="two-col">
+      <div><span class="field-lbl">시간당 수당 (원)</span><input type="number" id="hourlyRate" value="32746" min="0" inputmode="numeric" /></div>
+      <div><span class="field-lbl">기준 초과시간</span><input type="number" id="baseHours" value="14" min="0" inputmode="numeric" /></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">야근시간 <span style="font-size:10px;color:#aaa;font-weight:400;">← 스크롤로 이전 달 확인</span></p>
+    <div class="ot-scroll"><div class="ot-inner" id="otInner"></div></div>
+  </div>
+
+</div>
+<script>
+  var today = new Date();
+  var STORAGE_KEY = 'sev-data-v3';
+  var saveTimer = null;
+  var otData = {};
+
+  function monthKeyFromDate(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  }
+
+  var store = {
+    set: function(k, v) { try { localStorage.setItem(k, v); return true; } catch(e) { return false; } },
+    get: function(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }
+  };
+
+  // 이번달 포함 총 7개월 (오래된 순)
+  var months = [];
+  for (var i = 6; i >= 0; i--) {
+    var d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+    var key = monthKeyFromDate(d);
+    var label = d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0');
+    var sublabel = i === 0 ? '이번달' : (i + '개월 전');
+    var type = i === 0 ? 'current' : (i <= 3 ? 'active' : 'old');
+    months.push({ key: key, label: label, sublabel: sublabel, type: type, ago: i });
+  }
+
+  var otInner = document.getElementById('otInner');
+  months.forEach(function(m) {
+    var col = document.createElement('div');
+    col.className = 'ot-col ' + m.type;
+    col.innerHTML =
+      '<div class="ot-col-inner">' +
+        '<div class="ot-month">' + m.label + '<br>' + m.sublabel + '</div>' +
+        '<input type="number" id="ot_' + m.key + '" min="0" placeholder="0" inputmode="numeric" />' +
+        '<div class="excess" id="ex_' + m.key + '"></div>' +
+      '</div>';
+    otInner.appendChild(col);
+
+    document.getElementById('ot_' + m.key).addEventListener('input', (function(mk) {
+      return function() {
+        var val = document.getElementById('ot_' + mk).value;
+        if (val === '') { delete otData[mk]; } else { otData[mk] = val; }
+        onInput();
+      };
+    })(m.key));
+  });
+
+  setTimeout(function() {
+    var sc = document.querySelector('.ot-scroll');
+    if (sc) sc.scrollLeft = sc.scrollWidth;
+  }, 80);
+
+  function fmt(n) { return Math.round(n).toLocaleString('ko-KR') + '원'; }
+
+  function recalc() {
+    var hourly = parseFloat(document.getElementById('hourlyRate').value) || 0;
+    var base   = parseFloat(document.getElementById('baseHours').value)  || 14;
+
+    months.forEach(function(m) {
+      var v  = parseFloat(document.getElementById('ot_' + m.key).value);
+      var el = document.getElementById('ex_' + m.key);
+      if (isNaN(v) || !hourly) { el.textContent = ''; return; }
+      var ex = Math.max(0, v - base);
+      if (m.type === 'current') {
+        el.textContent = ex > 0 ? '+' + ex.toFixed(1) + 'h' : '진행중';
+        el.className = 'excess cur';
+      } else {
+        el.textContent = ex > 0 ? '+' + ex.toFixed(1) + 'h' : '기준이하';
+        el.className = 'excess' + (ex > 0 ? '' : ' under');
+      }
+    });
+
+    var join   = new Date(document.getElementById('joinDate').value);
+    var retire = new Date(document.getElementById('retireDate').value);
+    var years  = (retire - join) / (1000 * 60 * 60 * 24 * 365.25);
+    document.getElementById('r-years').textContent = isNaN(years) ? '—' : years.toFixed(2) + '년';
+
+    var activeMonths = months.filter(function(m) { return m.ago >= 1 && m.ago <= 3; }).reverse();
+    var vals = activeMonths.map(function(m) {
+      var v = parseFloat(document.getElementById('ot_' + m.key).value);
+      return isNaN(v) ? null : v;
+    });
+
+    if (!hourly || vals.some(function(v) { return v === null; })) {
+      document.getElementById('r-total').textContent = '—';
+      document.getElementById('r-avg').textContent   = '—';
+      document.getElementById('detailCard').style.display = 'none';
+      return;
+    }
+
+    var pays  = vals.map(function(h) { return Math.max(0, h - base) * hourly * 1.5; });
+    var avg   = pays.reduce(function(a, b) { return a + b; }, 0) / 3;
+    var total = avg * years;
+
+    document.getElementById('r-total').textContent = fmt(total);
+    document.getElementById('r-avg').textContent   = fmt(avg);
+
+    var detail = '';
+    activeMonths.forEach(function(m, idx) {
+      var exc = Math.max(0, vals[idx] - base);
+      detail += '<div class="detail-row"><span>' + m.label + ' (초과 ' + exc.toFixed(1) + 'h)</span><span>' + fmt(pays[idx]) + '</span></div>';
+    });
+    document.getElementById('monthDetail').innerHTML = detail;
+    document.getElementById('r-formula').textContent = '초과h × ' + hourly.toLocaleString('ko-KR') + '원 × 1.5';
+    document.getElementById('r-avg2').textContent    = fmt(avg) + '/월';
+    document.getElementById('r-years2').textContent  = years.toFixed(2) + '년';
+    document.getElementById('detailCard').style.display = 'block';
+  }
+
+  function save() {
+    var badge = document.getElementById('saveBadge');
+    var data = {
+      joinDate:   document.getElementById('joinDate').value,
+      retireDate: document.getElementById('retireDate').value,
+      hourlyRate: document.getElementById('hourlyRate').value,
+      baseHours:  document.getElementById('baseHours').value,
+      ot: otData
+    };
+    var ok = store.set(STORAGE_KEY, JSON.stringify(data));
+    badge.textContent = ok ? '✓ 저장됨' : '저장 실패';
+    badge.className = ok ? 'save-badge saved' : 'save-badge';
+    setTimeout(function() { badge.textContent = ''; badge.className = 'save-badge'; }, 2000);
+  }
+
+  function load() {
+    var badge = document.getElementById('saveBadge');
+    document.getElementById('retireDate').value = today.toISOString().split('T')[0];
+    var raw = store.get(STORAGE_KEY);
+    if (raw) {
+      try {
+        var d = JSON.parse(raw);
+        if (d.joinDate)   document.getElementById('joinDate').value   = d.joinDate;
+        if (d.retireDate) document.getElementById('retireDate').value = d.retireDate;
+        if (d.hourlyRate) document.getElementById('hourlyRate').value = d.hourlyRate;
+        if (d.baseHours)  document.getElementById('baseHours').value  = d.baseHours;
+        if (d.ot) {
+          otData = d.ot;
+          months.forEach(function(m) {
+            if (otData[m.key] !== undefined && otData[m.key] !== '') {
+              document.getElementById('ot_' + m.key).value = otData[m.key];
+            }
+          });
+        }
+        badge.textContent = '✓ 불러옴';
+        badge.className = 'save-badge saved';
+        setTimeout(function() { badge.textContent = ''; badge.className = 'save-badge'; }, 2000);
+      } catch(e) {}
+    }
+    recalc();
+  }
+
+  function onInput() {
+    recalc();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(save, 600);
+  }
+
+  ['joinDate','retireDate','hourlyRate','baseHours'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', onInput);
+  });
+
+  load();
+</script>
+</body>
+</html>
