@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아이들 성장 기록</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf6ef; --warm: #f0e8d8; --bark: #5c3d2e;
+    --leaf: #4a7c59; --sky: #6b9ab8; --blossom: #d4826a;
+    --gold: #c9a84c; --ink: #2c2416; --shadow: rgba(44,36,22,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Gowun Dodum', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+
+  header { background: var(--bark); padding: 20px 22px; display: flex; align-items: center; gap: 12px; }
+  .header-icon { font-size: 1.7rem; }
+  header h1 { font-family: 'Nanum Myeongjo', serif; font-size: 1.3rem; color: var(--cream); font-weight: 700; }
+  header p { color: rgba(250,246,239,0.52); font-size: 0.78rem; margin-top: 2px; }
+
+  .child-bar { background: var(--bark); padding: 0 22px 16px; display: flex; gap: 10px; border-bottom: 3px solid rgba(0,0,0,0.15); }
+  .child-chip { padding: 8px 22px; border-radius: 999px; border: 2px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.1); font-family: 'Gowun Dodum', sans-serif; font-size: 0.92rem; cursor: pointer; transition: all 0.2s; color: rgba(255,255,255,0.7); }
+  .child-chip.active { background: var(--cream); color: var(--bark); border-color: var(--cream); font-weight: 700; }
+  .child-chip:hover:not(.active) { background: rgba(255,255,255,0.2); color: white; }
+
+  .tab-bar { display: flex; background: var(--warm); border-bottom: 2px solid rgba(92,61,46,0.15); }
+  .tab-btn { flex: 1; padding: 13px 6px; border: none; background: none; font-family: 'Gowun Dodum', sans-serif; font-size: 0.83rem; color: rgba(44,36,22,0.45); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; text-align: center; }
+  .tab-btn.active { color: var(--bark); border-bottom-color: var(--blossom); font-weight: 700; }
+  .tab-btn:hover:not(.active) { color: var(--bark); }
+
+  main { padding: 20px 16px; max-width: 900px; margin: 0 auto; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: white; border-radius: 16px; padding: 18px 20px; box-shadow: 0 2px 12px var(--shadow); margin-bottom: 18px; }
+
+  .add-form-title { font-family: 'Nanum Myeongjo', serif; font-size: 1rem; font-weight: 700; margin-bottom: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .form-group label { display: block; font-size: 0.72rem; color: rgba(44,36,22,0.5); margin-bottom: 5px; }
+  .form-group input { width: 100%; padding: 10px 12px; border: 1.5px solid rgba(92,61,46,0.2); border-radius: 10px; font-family: 'Gowun Dodum', sans-serif; font-size: 0.95rem; color: var(--ink); background: var(--cream); outline: none; transition: border-color 0.2s; }
+  .form-group input:focus { border-color: var(--bark); background: white; }
+  .btn-save { width: 100%; padding: 12px; background: var(--bark); color: var(--cream); border: none; border-radius: 12px; font-family: 'Gowun Dodum', sans-serif; font-size: 1rem; cursor: pointer; transition: all 0.2s; font-weight: 700; }
+  .btn-save:hover { background: var(--blossom); }
+  .btn-save:active { transform: scale(0.98); }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 18px; }
+  .stat-card { background: white; border-radius: 14px; padding: 15px 17px; box-shadow: 0 2px 10px var(--shadow); position: relative; overflow: hidden; }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+  .stat-card.height::before { background: var(--leaf); }
+  .stat-card.weight::before { background: var(--sky); }
+  .stat-card.age::before { background: var(--gold); }
+  .stat-card.bmi::before { background: var(--blossom); }
+  .stat-label { font-size: 0.71rem; color: rgba(44,36,22,0.48); margin-bottom: 4px; }
+  .stat-value { font-family: 'Nanum Myeongjo', serif; font-size: 1.7rem; font-weight: 700; }
+  .stat-unit { font-size: 0.76rem; color: rgba(44,36,22,0.38); }
+  .stat-diff { margin-top: 4px; font-size: 0.74rem; line-height: 1.5; }
+  .diff-above { color: var(--leaf); } .diff-below { color: var(--blossom); } .diff-avg { color: var(--gold); }
+
+  .pct-title { font-size: 0.75rem; color: rgba(44,36,22,0.45); margin-bottom: 14px; }
+  .pct-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .pct-label { font-size: 0.82rem; width: 50px; }
+  .pct-bar-track { flex: 1; height: 10px; background: var(--warm); border-radius: 999px; position: relative; }
+  .pct-bar-fill { height: 100%; border-radius: 999px; transition: width 0.9s cubic-bezier(0.34,1.56,0.64,1); }
+  .pct-bar-fill.height { background: linear-gradient(90deg, var(--leaf), #6fba8a); }
+  .pct-bar-fill.weight { background: linear-gradient(90deg, var(--sky), #8bbdd4); }
+  .pct-marker { position: absolute; top: 50%; transform: translate(-50%,-50%); width: 15px; height: 15px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 4px var(--shadow); }
+  .pct-marker.height { background: var(--leaf); } .pct-marker.weight { background: var(--sky); }
+  .pct-value { font-size: 0.82rem; width: 55px; text-align: right; font-weight: 700; }
+
+  .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+  .chart-title { font-family: 'Nanum Myeongjo', serif; font-size: 0.95rem; font-weight: 700; }
+  .chart-toggle { display: flex; gap: 5px; }
+  .toggle-btn { padding: 5px 12px; border-radius: 8px; border: 1.5px solid rgba(92,61,46,0.2); background: none; font-size: 0.76rem; cursor: pointer; font-family: 'Gowun Dodum', sans-serif; color: rgba(44,36,22,0.48); transition: all 0.2s; }
+  .toggle-btn.active { background: var(--bark); color: white; border-color: var(--bark); }
+
+  /* 마지막 기록 이후 구간 안내 */
+  .gap-notice {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
+    font-size: 0.78rem; color: rgba(44,36,22,0.6); line-height: 1.4;
+  }
+  .gap-notice strong { color: var(--bark); }
+
+  .record-item { padding: 14px 0; border-bottom: 1px solid var(--warm); display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 6px; align-items: center; }
+  .record-item:last-child { border-bottom: none; }
+  .rec-date { font-size: 0.82rem; color: rgba(44,36,22,0.5); }
+  .rec-age { font-size: 0.75rem; color: rgba(44,36,22,0.38); margin-top: 2px; }
+  .rec-val { font-family: 'Nanum Myeongjo', serif; font-size: 1.05rem; font-weight: 700; }
+  .diff-badge { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; margin-top: 3px; }
+  .badge-green { background: rgba(74,124,89,0.1); color: var(--leaf); }
+  .badge-blue { background: rgba(107,154,184,0.1); color: var(--sky); }
+  .badge-orange { background: rgba(212,130,106,0.1); color: var(--blossom); }
+  .btn-del { padding: 5px 9px; background: none; border: 1px solid rgba(212,130,106,0.35); border-radius: 7px; color: var(--blossom); font-size: 0.72rem; cursor: pointer; font-family: 'Gowun Dodum', sans-serif; }
+  .btn-del:hover { background: var(--blossom); color: white; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(44,36,22,0.5); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: 18px; padding: 24px; max-width: 340px; width: 90%; box-shadow: 0 16px 50px rgba(44,36,22,0.22); }
+  .modal h3 { font-family: 'Nanum Myeongjo', serif; margin-bottom: 10px; }
+  .modal-btns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+  .btn-cancel { padding: 9px 16px; background: var(--warm); border: none; border-radius: 10px; font-family: 'Gowun Dodum', sans-serif; cursor: pointer; }
+  .btn-del-confirm { padding: 9px 16px; background: var(--blossom); color: white; border: none; border-radius: 10px; font-family: 'Gowun Dodum', sans-serif; cursor: pointer; }
+
+  .empty-state { text-align: center; padding: 36px 16px; color: rgba(44,36,22,0.3); }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 8px; }
+
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--bark); color: var(--cream); padding: 10px 20px; border-radius: 12px; font-size: 0.86rem; opacity: 0; transition: all 0.3s; z-index: 200; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .note-tag { display: inline-block; background: rgba(201,168,76,0.18); color: var(--gold); padding: 1px 7px; border-radius: 5px; font-size: 0.68rem; margin-left: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="header-icon">🌱</span>
+  <div>
+    <h1>아이들 성장 기록</h1>
+    <p>키·몸무게 추적 & 또래 평균 비교</p>
+  </div>
+</header>
+
+<div class="child-bar" id="childBar"></div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview')">📊 성장 현황</button>
+  <button class="tab-btn" onclick="switchTab('chart')">📈 그래프</button>
+  <button class="tab-btn" onclick="switchTab('records')">📋 기록 목록</button>
+</div>
+
+<main>
+  <div class="panel active" id="panel-overview">
+    <div class="stats-grid" id="statsGrid"></div>
+    <div class="card" id="percentileSection"></div>
+  </div>
+
+  <div class="panel" id="panel-chart">
+    <div class="card">
+      <div class="chart-header">
+        <span class="chart-title" id="chartTitle">키 성장 추이</span>
+        <div class="chart-toggle">
+          <button class="toggle-btn active" onclick="setChartType('height',this)">키</button>
+          <button class="toggle-btn" onclick="setChartType('weight',this)">몸무게</button>
+        </div>
+      </div>
+      <div class="gap-notice" id="gapNotice" style="display:none"></div>
+      <canvas id="growthChart" height="300"></canvas>
+      <p style="font-size:0.68rem;color:rgba(44,36,22,0.35);margin-top:10px;text-align:right">
+        점선 = 또래 평균 (대한소아과학회 2017 성장도표 기준) · 실선 = 실제 기록
+      </p>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-records">
+    <div class="card">
+      <div class="add-form-title">✏️ 기록 추가</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>날짜</label>
+          <input type="date" id="inputDate">
+        </div>
+        <div class="form-group">
+          <label>키 (cm)</label>
+          <input type="number" id="inputHeight" placeholder="148.0" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>몸무게 (kg)</label>
+          <input type="number" id="inputWeight" placeholder="45.0" step="0.1">
+        </div>
+      </div>
+      <button class="btn-save" onclick="addRecord()">💾 저장</button>
+    </div>
+    <div class="card" id="recordsList"></div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3>기록 삭제</h3>
+    <p>이 기록을 삭제하시겠어요?</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-del-confirm" id="modalConfirm">삭제</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KOR = {
+  0:[49.9,49.1,3.3,3.2],12:[75.7,74.0,9.6,9.0],
+  24:[87.8,86.4,12.2,11.5],36:[96.5,95.6,14.3,13.9],
+  48:[103.3,102.7,16.3,15.8],60:[109.9,108.4,18.4,17.7],
+  72:[115.6,114.2,20.5,19.7],84:[121.5,120.0,23.1,22.4],
+  96:[127.3,126.4,26.3,25.7],108:[132.6,132.5,29.8,29.5],
+  120:[137.5,138.4,33.6,33.7],132:[142.3,143.9,38.0,38.7],
+  144:[147.5,149.0,43.1,43.8],156:[153.0,152.1,48.7,47.8],
+  168:[160.0,153.7,55.0,50.8],180:[165.0,154.5,59.0,52.0],
+  192:[168.5,155.1,62.0,52.5],204:[170.0,155.3,64.0,53.0],
+  216:[171.0,155.5,64.5,53.2],
+};
+
+function getAvg(ageM, gender) {
+  const gi = gender==='여'?1:0;
+  const keys = Object.keys(KOR).map(Number).sort((a,b)=>a-b);
+  let lo=keys[0], hi=keys[keys.length-1];
+  for(let i=0;i<keys.length-1;i++){
+    if(ageM>=keys[i]&&ageM<=keys[i+1]){lo=keys[i];hi=keys[i+1];break;}
+  }
+  if(ageM<=keys[0]){lo=hi=keys[0];}
+  if(ageM>=keys[keys.length-1]){lo=hi=keys[keys.length-1];}
+  if(lo===hi) return {h:KOR[lo][gi], w:KOR[lo][gi+2]};
+  const r=(ageM-lo)/(hi-lo);
+  return {
+    h: Math.round((KOR[lo][gi]+(KOR[hi][gi]-KOR[lo][gi])*r)*10)/10,
+    w: Math.round((KOR[lo][gi+2]+(KOR[hi][gi+2]-KOR[lo][gi+2])*r)*10)/10
+  };
+}
+
+const BASE_IDS = new Set(['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11',
+  't1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12']);
+
+let children = [
+  {id:'soyul', name:'박소율', gender:'여', birth:'2010-09-20'},
+  {id:'taemin', name:'박태민', gender:'남', birth:'2014-06-10'},
+];
+let records = [
+  {id:'s1',childId:'soyul',date:'2019-09-17',height:132.0,weight:31.8},
+  {id:'s2',childId:'soyul',date:'2019-12-10',height:135.4,weight:34.3},
+  {id:'s3',childId:'soyul',date:'2020-03-03',height:136.8,weight:37.3},
+  {id:'s4',childId:'soyul',date:'2020-05-26',height:138.6,weight:38.5},
+  {id:'s5',childId:'soyul',date:'2020-09-16',height:140.7,weight:39.0},
+  {id:'s6',childId:'soyul',date:'2021-01-06',height:142.2,weight:40.5},
+  {id:'s7',childId:'soyul',date:'2021-08-18',height:147.3,weight:45.6},
+  {id:'s8',childId:'soyul',date:'2021-12-08',height:148.1,weight:47.6},
+  {id:'s9',childId:'soyul',date:'2022-03-02',height:149.2,weight:47.5},
+  {id:'s10',childId:'soyul',date:'2022-04-06',height:149.3,weight:49.0},
+  {id:'s11',childId:'soyul',date:'2022-06-29',height:150.8,weight:50.2},
+  {id:'t1',childId:'taemin',date:'2022-02-23',height:125.9,weight:32.3},
+  {id:'t2',childId:'taemin',date:'2022-08-24',height:129.5,weight:31.9},
+  {id:'t3',childId:'taemin',date:'2023-02-01',height:132.2,weight:34.6},
+  {id:'t4',childId:'taemin',date:'2023-07-26',height:135.1,weight:36.0},
+  {id:'t5',childId:'taemin',date:'2023-10-11',height:137.2,weight:38.6},
+  {id:'t6',childId:'taemin',date:'2024-05-29',height:140.0,weight:42.0},
+  {id:'t7',childId:'taemin',date:'2024-12-11',height:142.7,weight:40.4},
+  {id:'t8',childId:'taemin',date:'2025-03-12',height:144.3,weight:44.0},
+  {id:'t9',childId:'taemin',date:'2025-06-11',height:145.5,weight:42.3},
+  {id:'t10',childId:'taemin',date:'2025-09-10',height:145.6,weight:45.8},
+  {id:'t11',childId:'taemin',date:'2025-12-10',height:146.7,weight:49.9},
+  {id:'t12',childId:'taemin',date:'2026-03-04',height:147.5,weight:53.3},
+];
+
+JSON.parse(localStorage.getItem('gc_extra')||'[]').forEach(r=>{
+  if(!records.find(x=>x.id===r.id)) records.push(r);
+});
+function save() {
+  localStorage.setItem('gc_extra', JSON.stringify(records.filter(r=>!BASE_IDS.has(r.id))));
+}
+
+let activeChildId = 'taemin';
+let chartType = 'height';
+let growthChart = null;
+
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+
+function getAgeMonths(birth, dateStr) {
+  const b=new Date(birth), d=new Date(dateStr);
+  return (d.getFullYear()-b.getFullYear())*12+(d.getMonth()-b.getMonth());
+}
+function formatAge(m) {
+  const y=Math.floor(m/12), mo=m%12;
+  if(y===0) return `${mo}개월`;
+  if(mo===0) return `${y}세`;
+  return `${y}세 ${mo}개월`;
+}
+function uid() { return 'u'+Date.now().toString(36); }
+function normalCDF(z){
+  const t=1/(1+0.2315419*Math.abs(z));
+  const d=0.3989423*Math.exp(-z*z/2);
+  const p=d*t*(0.3193815+t*(-0.3565638+t*(1.7814779+t*(-1.8212560+t*1.3302744))));
+  return z>0?1-p:p;
+}
+function approxPct(val,avg,type){
+  const sd=type==='h'?avg*0.035:avg*0.12;
+  return Math.min(99,Math.max(1,Math.round(normalCDF((val-avg)/sd)*100)));
+}
+function bmiLabel(b){ if(b<14)return '저체중'; if(b<18)return '정상 범위'; if(b<22)return '과체중 주의'; return '비만 주의'; }
+
+// 시작월~끝월 사이 모든 YYYY-MM 생성
+function monthRange(startStr, endStr) {
+  const result = [];
+  const cur = new Date(startStr.slice(0,7)+'-01');
+  const end = new Date(endStr.slice(0,7)+'-01');
+  while(cur <= end) {
+    result.push(cur.toISOString().slice(0,7));
+    cur.setMonth(cur.getMonth()+1);
+  }
+  return result;
+}
+
+function renderChildBar() {
+  document.getElementById('childBar').innerHTML =
+    children.map(c=>`<button class="child-chip ${c.id===activeChildId?'active':''}" onclick="selectChild('${c.id}')">
+      ${c.gender==='여'?'👧':'👦'} ${c.name}</button>`).join('');
+}
+
+function renderOverview() {
+  const child = children.find(c=>c.id===activeChildId);
+  if(!child) return;
+  const recs = records.filter(r=>r.childId===activeChildId).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!recs.length) {
+    document.getElementById('statsGrid').innerHTML=`<div class="empty-state"><div class="empty-icon">📏</div><p>기록 없음</p></div>`;
+    document.getElementById('percentileSection').innerHTML=''; return;
+  }
+  const latest = recs[recs.length-1];
+  const ageM = getAgeMonths(child.birth, latest.date);
+  const todayM = getAgeMonths(child.birth, todayStr());
+  const avg = getAvg(ageM, child.gender);
+  const hd = Math.round((latest.height-avg.h)*10)/10;
+  const wd = Math.round((latest.weight-avg.w)*10)/10;
+  const bmi = Math.round(latest.weight/((latest.height/100)**2)*10)/10;
+  const hPct = approxPct(latest.height, avg.h, 'h');
+  const wPct = approxPct(latest.weight, avg.w, 'w');
+
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card age">
+      <div class="stat-label">현재 나이</div>
+      <div class="stat-value" style="font-size:1.25rem">${formatAge(todayM)}</div>
+      <div class="stat-diff diff-avg">${child.gender} · ${child.birth}</div>
+    </div>
+    <div class="stat-card bmi">
+      <div class="stat-label">BMI <span class="note-tag">${latest.date} 기준</span></div>
+      <div class="stat-value">${bmi}</div>
+      <div class="stat-diff diff-avg">${bmiLabel(bmi)}</div>
+    </div>
+    <div class="stat-card height">
+      <div class="stat-label">최근 키 <span class="note-tag">${latest.date}</span></div>
+      <div class="stat-value">${latest.height}<span class="stat-unit">cm</span></div>
+      <div class="stat-diff ${hd>=0?'diff-above':'diff-below'}">
+        ${hd>=0?'▲':'▼'} 평균보다 ${Math.abs(hd)}cm ${hd>=0?'큼':'작음'}<br>
+        <span style="color:rgba(44,36,22,0.35);font-size:0.68rem">또래 평균 ${avg.h}cm</span>
+      </div>
+    </div>
+    <div class="stat-card weight">
+      <div class="stat-label">최근 몸무게</div>
+      <div class="stat-value">${latest.weight}<span class="stat-unit">kg</span></div>
+      <div class="stat-diff ${wd>=0?'diff-above':'diff-below'}">
+        ${wd>=0?'▲':'▼'} 평균보다 ${Math.abs(wd)}kg ${wd>=0?'많음':'적음'}<br>
+        <span style="color:rgba(44,36,22,0.35);font-size:0.68rem">또래 평균 ${avg.w}kg</span>
+      </div>
+    </div>`;
+
+  document.getElementById('percentileSection').innerHTML = `
+    <div class="pct-title">또래 100명 중 몇 번째? — ${formatAge(ageM)} 기준 추정 백분위</div>
+    <div class="pct-row">
+      <span class="pct-label">키</span>
+      <div class="pct-bar-track">
+        <div class="pct-bar-fill height" style="width:${hPct}%"></div>
+        <div class="pct-marker height" style="left:${hPct}%"></div>
+      </div>
+      <span class="pct-value" style="color:var(--leaf)">${hPct}번째</span>
+    </div>
+    <div class="pct-row">
+      <span class="pct-label">몸무게</span>
+      <div class="pct-bar-track">
+        <div class="pct-bar-fill weight" style="width:${wPct}%"></div>
+        <div class="pct-marker weight" style="left:${wPct}%"></div>
+      </div>
+      <span class="pct-value" style="color:var(--sky)">${wPct}번째</span>
+    </div>
+    <p style="font-size:0.7rem;color:rgba(44,36,22,0.36);margin-top:10px">
+      * 대한소아과학회 2017 소아청소년 성장도표 50th 중앙값 기준
+    </p>`;
+}
+
+function renderChart() {
+  const child = children.find(c=>c.id===activeChildId);
+  if(!child) return;
+
+  const recs = records.filter(r=>r.childId===activeChildId).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!recs.length) return;
+
+  const today = todayStr();
+  const firstDate = recs[0].date;
+  const lastRecDate = recs[recs.length-1].date;
+
+  // ✅ x축은 항상 첫 기록 ~ 오늘까지
+  const months = monthRange(firstDate, today);
+
+  // 실제 기록 맵 (YYYY-MM → 값)
+  const recMap = {};
+  recs.forEach(r => {
+    const ym = r.date.slice(0,7);
+    recMap[ym] = chartType==='height' ? r.height : r.weight;
+  });
+
+  // 실제 기록 dataset (기록 없는 월은 null → 선 끊김)
+  const actualData = months.map(ym => recMap[ym] ?? null);
+
+  // 또래 평균 dataset (전 구간 연속 — 오늘까지)
+  const avgData = months.map(ym => {
+    const ageM = getAgeMonths(child.birth, ym + '-15');
+    const a = getAvg(ageM, child.gender);
+    return chartType==='height' ? a.h : a.w;
+  });
+
+  // 안내 배너
+  const notice = document.getElementById('gapNotice');
+  if(lastRecDate < today) {
+    const days = Math.floor((new Date(today)-new Date(lastRecDate))/(1000*60*60*24));
+    notice.style.display = 'flex';
+    notice.innerHTML = `📅 <strong>마지막 기록: ${lastRecDate}</strong> (${days}일 전) — 새 기록을 추가하면 실선이 오늘까지 이어져요`;
+  } else {
+    notice.style.display = 'none';
+  }
+
+  document.getElementById('chartTitle').textContent =
+    (chartType==='height'?'키':'몸무게') + ' 성장 추이 — ' + child.name;
+
+  const color = chartType==='height' ? '#4a7c59' : '#6b9ab8';
+  const colorBg = chartType==='height' ? 'rgba(74,124,89,0.09)' : 'rgba(107,154,184,0.09)';
+
+  if(growthChart) growthChart.destroy();
+  growthChart = new Chart(document.getElementById('growthChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: child.name + ' (실제)',
+          data: actualData,
+          borderColor: color,
+          backgroundColor: colorBg,
+          borderWidth: 2.5,
+          pointBackgroundColor: color,
+          // 기록 있는 월만 점 표시
+          pointRadius: months.map(ym => recMap[ym] !== undefined ? 5 : 0),
+          pointHoverRadius: months.map(ym => recMap[ym] !== undefined ? 7 : 0),
+          tension: 0.35,
+          fill: true,
+          spanGaps: false,
+        },
+        {
+          label: '또래 평균',
+          data: avgData,
+          borderColor: '#c9a84c',
+          borderWidth: 1.8,
+          borderDash: [5, 4],
+          pointRadius: 0,
+          tension: 0.35,
+          fill: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { font: { family: 'Gowun Dodum' }, color: '#2c2416' } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              if(ctx.parsed.y === null) return null;
+              return `${ctx.dataset.label}: ${ctx.parsed.y}${chartType==='height'?'cm':'kg'}`;
+            }
+          },
+          filter: item => item.parsed.y !== null,
+        }
+      },
+      scales: {
+        y: {
+          ticks: { font: { family: 'Gowun Dodum' }, color: 'rgba(44,36,22,0.5)' },
+          grid: { color: 'rgba(44,36,22,0.06)' },
+          title: { display: true, text: chartType==='height'?'키 (cm)':'몸무게 (kg)', font: { family: 'Gowun Dodum' }, color: 'rgba(44,36,22,0.45)' }
+        },
+        x: {
+          ticks: {
+            font: { family: 'Gowun Dodum' },
+            color: 'rgba(44,36,22,0.5)',
+            maxTicksLimit: 10,
+            maxRotation: 45,
+          },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+function renderRecordsList() {
+  const child = children.find(c=>c.id===activeChildId);
+  const recs = records.filter(r=>r.childId===activeChildId).sort((a,b)=>b.date.localeCompare(a.date));
+  const el = document.getElementById('recordsList');
+  if(!child||!recs.length) {
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><p>위에서 첫 기록을 추가해보세요!</p></div>`;
+    return;
+  }
+  el.innerHTML = recs.map(r => {
+    const m = getAgeMonths(child.birth, r.date);
+    const avg = getAvg(m, child.gender);
+    const hd = Math.round((r.height-avg.h)*10)/10;
+    const wd = Math.round((r.weight-avg.w)*10)/10;
+    return `<div class="record-item">
+      <div>
+        <div class="rec-date">${r.date}</div>
+        <div class="rec-age">${formatAge(m)}</div>
+      </div>
+      <div>
+        <div class="rec-val">${r.height}cm</div>
+        <div><span class="diff-badge ${hd>=0?'badge-green':'badge-orange'}">${hd>=0?'+':''}${hd}cm</span></div>
+      </div>
+      <div>
+        <div class="rec-val">${r.weight}kg</div>
+        <div><span class="diff-badge ${wd>=0?'badge-blue':'badge-orange'}">${wd>=0?'+':''}${wd}kg</span></div>
+      </div>
+      <button class="btn-del" onclick="confirmDelete('${r.id}')">삭제</button>
+    </div>`;
+  }).join('');
+}
+
+function renderAll() {
+  renderChildBar();
+  renderOverview();
+  renderRecordsList();
+  if(document.getElementById('panel-chart').classList.contains('active')) renderChart();
+}
+
+function selectChild(id) { activeChildId=id; renderAll(); }
+
+function addRecord() {
+  const d = document.getElementById('inputDate').value;
+  const h = parseFloat(document.getElementById('inputHeight').value);
+  const w = parseFloat(document.getElementById('inputWeight').value);
+  if(!d||isNaN(h)||isNaN(w)) { showToast('날짜, 키, 몸무게를 모두 입력해주세요!'); return; }
+  records.push({id:uid(), childId:activeChildId, date:d, height:h, weight:w});
+  save();
+  document.getElementById('inputHeight').value='';
+  document.getElementById('inputWeight').value='';
+  renderAll();
+  showToast('✅ 저장되었어요!');
+}
+
+let pendingDeleteId = null;
+function confirmDelete(id) {
+  pendingDeleteId = id;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('modalConfirm').onclick = () => {
+    records = records.filter(r=>r.id!==pendingDeleteId);
+    save(); closeModal(); renderAll(); showToast('삭제되었어요.');
+  };
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+function setChartType(type, btn) {
+  chartType = type;
+  document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderChart();
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  ['overview','chart','records'].forEach((n,i)=>{
+    if(n===name) document.querySelectorAll('.tab-btn')[i].classList.add('active');
+  });
+  if(name==='chart') renderChart();
+}
+
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+document.getElementById('inputDate').value = todayStr();
+renderAll();
+</script>
+</body>
+</html>
