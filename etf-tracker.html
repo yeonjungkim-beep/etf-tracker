@@ -384,34 +384,71 @@ const nid=()=>++uid;
 const newEtf=(name,sh,pr)=>({id:nid(),name,sh,pr});
 let selectedAge='40대';
 
-let brokers=[
-  {id:nid(),name:'삼성증권',irp:false,etfs:[
-    newEtf('KODEX 미국나스닥100','2232','24452'),
-    newEtf('KODEX 미국배당다우존스','764','12490'),
-    newEtf('KODEX 미국S&P500','506','22700'),
+// 기본 데이터 (localStorage에 저장된 게 없을 때만 사용)
+const DEFAULT_BROKERS=[
+  {name:'삼성증권',irp:false,etfs:[
+    {name:'KODEX 미국나스닥100',sh:'2232',pr:'24452'},
+    {name:'KODEX 미국배당다우존스',sh:'764',pr:'12490'},
+    {name:'KODEX 미국S&P500',sh:'506',pr:'22700'},
   ]},
-  {id:nid(),name:'한국투자증권',irp:false,etfs:[
-    newEtf('TIGER 미국배당다우존스','1485','14485'),
-    newEtf('KODEX 미국배당다우존스','848','12490'),
+  {name:'한국투자증권',irp:false,etfs:[
+    {name:'TIGER 미국배당다우존스',sh:'1485',pr:'14485'},
+    {name:'KODEX 미국배당다우존스',sh:'848',pr:'12490'},
   ]},
-  {id:nid(),name:'KB증권',irp:false,etfs:[
-    newEtf('KODEX 미국나스닥100','1','24452'),
-    newEtf('TIGER 미국배당다우존스','299','14485'),
-    newEtf('KODEX 미국S&P500','164','22700'),
+  {name:'KB증권',irp:false,etfs:[
+    {name:'KODEX 미국나스닥100',sh:'1',pr:'24452'},
+    {name:'TIGER 미국배당다우존스',sh:'299',pr:'14485'},
+    {name:'KODEX 미국S&P500',sh:'164',pr:'22700'},
   ]},
-  {id:nid(),name:'NH투자증권 (일반)',irp:false,etfs:[
-    newEtf('SOL 미국S&P500미국채혼합50','',''),
-    newEtf('TIGER 미국배당다우존스','',''),
-    newEtf('SOL 미국배당다우존스','',''),
-    newEtf('TIGER 미국S&P500','',''),
+  {name:'NH투자증권 (일반)',irp:false,etfs:[
+    {name:'SOL 미국S&P500미국채혼합50',sh:'',pr:''},
+    {name:'TIGER 미국배당다우존스',sh:'',pr:''},
+    {name:'SOL 미국배당다우존스',sh:'',pr:''},
+    {name:'TIGER 미국S&P500',sh:'',pr:''},
   ]},
-  {id:nid(),name:'NH투자증권 (IRP·DC)',irp:true,etfs:[
-    newEtf('TIGER 미국S&P500','13','24825'),
-    newEtf('SOL 미국배당다우존스','48','13290'),
-    newEtf('TIGER 미국배당다우존스','44','14485'),
-    newEtf('SOL 미국S&P500미국채혼합50','64','11180'),
+  {name:'NH투자증권 (IRP·DC)',irp:true,etfs:[
+    {name:'TIGER 미국S&P500',sh:'13',pr:'24825'},
+    {name:'SOL 미국배당다우존스',sh:'48',pr:'13290'},
+    {name:'TIGER 미국배당다우존스',sh:'44',pr:'14485'},
+    {name:'SOL 미국S&P500미국채혼합50',sh:'64',pr:'11180'},
   ]},
 ];
+
+// localStorage에서 데이터 불러오기
+function loadBrokers() {
+  try {
+    const saved = localStorage.getItem('etf_brokers');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // id 재부여
+      return parsed.map(b => ({
+        ...b,
+        id: nid(),
+        etfs: b.etfs.map(e => ({...e, id: nid()}))
+      }));
+    }
+  } catch(e) {}
+  // 저장된 데이터 없으면 기본값 사용
+  return DEFAULT_BROKERS.map(b => ({
+    ...b,
+    id: nid(),
+    etfs: b.etfs.map(e => ({...e, id: nid()}))
+  }));
+}
+
+// localStorage에 데이터 저장
+function saveBrokers() {
+  try {
+    const toSave = brokers.map(b => ({
+      name: b.name,
+      irp: b.irp,
+      etfs: b.etfs.map(e => ({name: e.name, sh: e.sh, pr: e.pr}))
+    }));
+    localStorage.setItem('etf_brokers', JSON.stringify(toSave));
+  } catch(e) {}
+}
+
+let brokers = loadBrokers();
 
 // ── 계산 헬퍼 ──────────────────────────────────────
 const val=(e)=>(parseFloat(e.sh)||0)*(parseFloat(e.pr)||0);
@@ -1331,10 +1368,10 @@ function drawChart(canvas, yrs, pathOpt, pathMid, pathPes, startAge, investYrs) 
 
 
 function renderAll(){
+  saveBrokers(); // 변경사항 자동 저장
   updateHeader();
   const activeTab=[...document.querySelectorAll('.tab')].findIndex(t=>t.classList.contains('on'));
   renderPortfolio();renderIndex();renderRec();renderSummary();
-  // sim은 무거우므로 해당 탭일 때만 렌더
   if(activeTab===3) renderSim();
   const ids=['portfolio','index','rec','sim','summary'];
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id==='p-'+ids[Math.max(0,activeTab)]));
