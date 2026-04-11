@@ -400,17 +400,11 @@ const DEFAULT_BROKERS=[
     {name:'TIGER 미국배당다우존스',sh:'299',pr:'14485'},
     {name:'KODEX 미국S&P500',sh:'164',pr:'22700'},
   ]},
-  {name:'NH투자증권 (일반)',irp:false,etfs:[
-    {name:'SOL 미국S&P500미국채혼합50',sh:'',pr:''},
-    {name:'TIGER 미국배당다우존스',sh:'',pr:''},
-    {name:'SOL 미국배당다우존스',sh:'',pr:''},
-    {name:'TIGER 미국S&P500',sh:'',pr:''},
-  ]},
   {name:'NH투자증권 (IRP·DC)',irp:true,etfs:[
     {name:'TIGER 미국S&P500',sh:'13',pr:'24825'},
     {name:'SOL 미국배당다우존스',sh:'48',pr:'13290'},
     {name:'TIGER 미국배당다우존스',sh:'44',pr:'14485'},
-    {name:'SOL 미국S&P500미국채혼합50',sh:'64',pr:'11180'},
+    {name:'SOL 미국S&P500미국채혼합50',sh:'64',pr:'11245'},
   ]},
 ];
 
@@ -643,15 +637,29 @@ function makeEtfItem(b,e,gt,rebuild){
   const nameWrap=document.createElement('div');nameWrap.className='etf-name-wrap';
   const emSpan=document.createElement('span');emSpan.className='etf-emoji';emSpan.textContent=e.name?getCat(e.name).em:'';
   const nInp=document.createElement('input');nInp.className='etf-name-inp';nInp.placeholder='ETF명';nInp.value=e.name;
-  nInp.oninput=()=>{e.name=nInp.value;emSpan.textContent=e.name?getCat(e.name).em:'';updateBot();renderAll();};
+  // oninput: 데이터만 업데이트 + 이모지/금액만 갱신 (화면 전체 재렌더 X)
+  nInp.oninput=()=>{e.name=nInp.value;emSpan.textContent=e.name?getCat(e.name).em:'';updateBot();};
+  nInp.onblur=()=>{saveBrokers();updateHeader();};
   nameWrap.append(emSpan,nInp);
-  const shInp=document.createElement('input');shInp.className='etf-num-inp';shInp.type='number';shInp.min='0';shInp.placeholder='0';shInp.value=e.sh;shInp.oninput=()=>{e.sh=shInp.value;updateBot();renderAll();};
-  const prInp=document.createElement('input');prInp.className='etf-num-inp';prInp.type='number';prInp.min='0';prInp.placeholder='0';prInp.value=e.pr;prInp.oninput=()=>{e.pr=prInp.value;updateBot();renderAll();};
+
+  const shInp=document.createElement('input');shInp.className='etf-num-inp';shInp.type='number';shInp.min='0';shInp.placeholder='0';shInp.value=e.sh;
+  shInp.oninput=()=>{e.sh=shInp.value;updateBot();};
+  shInp.onblur=()=>{saveBrokers();updateHeader();};
+
+  const prInp=document.createElement('input');prInp.className='etf-num-inp';prInp.type='number';shInp.min='0';prInp.placeholder='0';prInp.value=e.pr;
+  prInp.oninput=()=>{e.pr=prInp.value;updateBot();};
+  prInp.onblur=()=>{saveBrokers();updateHeader();};
+
   top.append(nameWrap,shInp,prInp);
   const bot=document.createElement('div');bot.className='etf-item-bot';
   const valDiv=document.createElement('div');const pctDiv=document.createElement('span');
   const delBtn=document.createElement('button');delBtn.className='etf-del';delBtn.textContent='✕';delBtn.onclick=()=>{b.etfs=b.etfs.filter(x=>x.id!==e.id);rebuild();renderAll();};
-  function updateBot(){const v=val(e),p2=pct(v,gt);if(v>0){valDiv.className='etf-val';valDiv.textContent=fmtW(v);pctDiv.className='etf-pct';pctDiv.textContent=' · '+fmtP(p2);}else{valDiv.className='etf-val empty';valDiv.textContent='-';pctDiv.textContent='';}}
+  function updateBot(){
+    const gt2=gTot();
+    const v=val(e),p2=pct(v,gt2);
+    if(v>0){valDiv.className='etf-val';valDiv.textContent=fmtW(v);pctDiv.className='etf-pct';pctDiv.textContent=' · '+fmtP(p2);}
+    else{valDiv.className='etf-val empty';valDiv.textContent='-';pctDiv.textContent='';}
+  }
   updateBot();
   const valWrap=document.createElement('div');valWrap.style.cssText='display:flex;align-items:center';valWrap.append(valDiv,pctDiv);
   bot.append(valWrap,delBtn);item.append(top,bot);return item;
