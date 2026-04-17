@@ -39,29 +39,23 @@ body{background:#f1f5f9;font-family:'Noto Sans KR',sans-serif;color:#1e293b;font
 .bar-bg{background:#f1f5f9;border-radius:99px;overflow:hidden;height:6px;margin:8px 0 12px}
 .bar-fill{height:100%;border-radius:99px;transition:width .5s ease}
 .etf-section{margin-bottom:4px}
-.etf-col-hdr{display:grid;grid-template-columns:1.8fr 62px 62px 62px;gap:5px;padding:0 4px;margin-bottom:4px}
-.etf-col-hdr span{font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#94a3b8}
-.etf-col-hdr span:nth-child(2),.etf-col-hdr span:nth-child(3),.etf-col-hdr span:nth-child(4){text-align:center}
+.etf-col-hdr{display:grid;grid-template-columns:1fr 72px 72px;gap:6px;padding:0 4px;margin-bottom:4px}
+.etf-col-hdr span{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8}
+.etf-col-hdr span:nth-child(2),.etf-col-hdr span:nth-child(3){text-align:center}
 .etf-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 10px 8px;margin-bottom:6px}
-.etf-item-top{display:grid;grid-template-columns:1.8fr 62px 62px 62px;gap:5px;align-items:center;margin-bottom:6px}
+.etf-item-top{display:grid;grid-template-columns:1fr 72px 72px;gap:6px;align-items:center;margin-bottom:6px}
 .etf-name-wrap{display:flex;align-items:center;gap:5px}
 .etf-emoji{font-size:12px;flex-shrink:0}
 .etf-name-inp{border:1.5px solid #e2e8f0;border-radius:7px;padding:6px 8px;font-family:inherit;font-size:12px;color:#1e293b;background:#fff;width:100%;outline:none;min-width:0}
 .etf-name-inp:focus{border-color:#6366f1;box-shadow:0 0 0 2px rgba(99,102,241,.1)}
 .etf-name-inp::placeholder{color:#cbd5e1}
-.etf-num-inp{border:1.5px solid #e2e8f0;border-radius:7px;padding:6px 4px;font-family:inherit;font-size:12px;color:#1e293b;background:#fff;width:100%;outline:none;text-align:center}
+.etf-num-inp{border:1.5px solid #e2e8f0;border-radius:7px;padding:6px 6px;font-family:inherit;font-size:12px;color:#1e293b;background:#fff;width:100%;outline:none;text-align:center}
 .etf-num-inp:focus{border-color:#6366f1;box-shadow:0 0 0 2px rgba(99,102,241,.1)}
 .etf-num-inp::placeholder{color:#cbd5e1}
-.etf-num-inp.buy{background:#fffbeb;border-color:#fde68a}
-.etf-num-inp.buy:focus{border-color:#f59e0b}
-.etf-item-bot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}
+.etf-item-bot{display:flex;justify-content:space-between;align-items:center}
 .etf-val{font-size:13px;font-weight:700;color:#16a34a}
 .etf-val.empty{color:#cbd5e1;font-weight:400}
 .etf-pct{font-size:10px;color:#94a3b8}
-.etf-profit{font-size:11px;font-weight:700;padding:2px 7px;border-radius:99px;white-space:nowrap}
-.etf-profit.pos{background:#f0fdf4;color:#16a34a}
-.etf-profit.neg{background:#fef2f2;color:#ef4444}
-.etf-profit.zero{background:#f8fafc;color:#94a3b8}
 .etf-del{background:none;border:none;color:#cbd5e1;font-size:13px;cursor:pointer;padding:2px 4px;line-height:1}
 .etf-del:hover{color:#ef4444}
 .add-area{margin-top:10px;padding-top:10px;border-top:1px solid #f0f4f8}
@@ -84,19 +78,6 @@ body{background:#f1f5f9;font-family:'Noto Sans KR',sans-serif;color:#1e293b;font
 .card{background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .cat-card{border-radius:14px;padding:16px;margin-bottom:10px;border:2px solid}
 .cat-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-/* 수익률 요약 */
-.profit-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
-.ps-card{border-radius:11px;padding:11px 12px;text-align:center}
-.ps-lbl{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;margin-bottom:3px}
-.ps-val{font-size:16px;font-weight:800;line-height:1.1}
-.ps-sub{font-size:9px;margin-top:2px;color:#94a3b8}
-/* Sheets 연동 버튼 */
-.sheets-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;margin-bottom:10px;flex-wrap:wrap;background:#f0fdf4;border:1.5px solid #bbf7d0}
-.sheets-bar.err{background:#fef2f2;border-color:#fecaca}
-.sheets-bar.loading{background:#eff6ff;border-color:#bfdbfe}
-.sheets-btn{background:#16a34a;border:none;border-radius:8px;padding:6px 12px;color:#fff;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
-.sheets-btn:hover{background:#15803d}
-.sheets-btn.blue{background:#6366f1}.sheets-btn.blue:hover{background:#4f46e5}
 .cat-etf-row{background:rgba(255,255,255,.8);border-radius:9px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
 .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .stat-c{background:#fff;border:1.5px solid #e2e8f0;border-radius:11px;padding:12px}
@@ -140,62 +121,6 @@ body{background:#f1f5f9;font-family:'Noto Sans KR',sans-serif;color:#1e293b;font
 .risk-bar{display:flex;align-items:center;gap:6px;margin-top:4px}
 .risk-seg{height:6px;border-radius:2px;flex:1}
 .notice{font-size:10px;color:#94a3b8;margin-top:10px;line-height:1.6;padding:10px;background:#f8fafc;border-radius:8px}
-
-/* ── 시뮬레이션 탭 ── */
-.sim-hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%);border-radius:16px;padding:20px;margin-bottom:14px;color:#fff}
-.sim-hero-title{font-size:16px;font-weight:800;margin-bottom:4px}
-.sim-hero-sub{font-size:11px;opacity:.7;margin-bottom:14px}
-.sim-inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.sim-input-group{background:rgba(255,255,255,.08);border-radius:10px;padding:10px 12px}
-.sim-input-lbl{font-size:9px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.6);margin-bottom:5px}
-.sim-input-val{font-size:16px;font-weight:800;color:#fff;margin-bottom:4px}
-.sim-inp{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:5px 8px;color:#fff;font-family:inherit;font-size:13px;width:100%;outline:none}
-.sim-inp::placeholder{color:rgba(255,255,255,.4)}
-.sim-run-btn{width:100%;margin-top:12px;background:#6366f1;border:none;border-radius:10px;padding:11px;color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.03em}
-.sim-run-btn:hover{background:#4f46e5}
-.sim-scenario-tabs{display:flex;gap:6px;margin-bottom:12px}
-.sim-stab{flex:1;background:#fff;border:2px solid #e2e8f0;border-radius:99px;padding:6px 0;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
-.sim-stab.on{color:#fff;border-color:transparent}
-.chart-wrap{position:relative;width:100%;height:220px;margin:10px 0}
-canvas{border-radius:8px}
-.sim-result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
-.sim-r-card{border-radius:11px;padding:12px 14px}
-.sim-r-lbl{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;opacity:.7}
-.sim-r-val{font-size:18px;font-weight:800;line-height:1.1}
-.sim-r-sub{font-size:10px;margin-top:2px;opacity:.7}
-.milestones{display:flex;flex-direction:column;gap:0}
-.ms-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9}
-.ms-row:last-child{border-bottom:none}
-.ms-year{font-size:11px;font-weight:700;color:#94a3b8;min-width:44px}
-.ms-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.ms-info{flex:1}
-.ms-amt{font-size:14px;font-weight:800}
-.ms-sub{font-size:10px;color:#94a3b8;margin-top:1px}
-.ms-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap}
-.scenario-compare{width:100%;border-collapse:collapse;font-size:11px}
-.scenario-compare th{background:#f8fafc;padding:7px 8px;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;border-bottom:1px solid #e2e8f0;text-align:center}
-.scenario-compare td{padding:7px 8px;text-align:center;border-bottom:1px solid #f8fafc;font-size:12px}
-.scenario-compare td:first-child{text-align:left;font-weight:600;color:#475569}
-
-/* ── 가격 연동 배너 ── */
-.price-banner{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;border-radius:10px;margin-bottom:12px;flex-wrap:wrap}
-.price-banner.idle{background:#f1f5f9;border:1.5px solid #e2e8f0}
-.price-banner.loading{background:#eff6ff;border:1.5px solid #bfdbfe}
-.price-banner.success{background:#f0fdf4;border:1.5px solid #bbf7d0}
-.price-banner.error{background:#fef2f2;border:1.5px solid #fecaca}
-.price-banner-txt{font-size:12px;font-weight:600;flex:1}
-.price-banner-sub{font-size:10px;color:#94a3b8;margin-top:1px}
-.price-fetch-btn{background:#6366f1;border:none;border-radius:8px;padding:7px 14px;color:#fff;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
-.price-fetch-btn:hover{background:#4f46e5}
-.price-fetch-btn:disabled{background:#cbd5e1;cursor:not-allowed}
-.api-setup-area{background:#faf5ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:14px;margin-bottom:12px}
-.api-setup-title{font-size:12px;font-weight:700;color:#7c3aed;margin-bottom:8px}
-.api-url-inp{width:100%;background:#fff;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-family:'Noto Sans KR',sans-serif;font-size:11px;color:#1e293b;outline:none;margin-bottom:6px}
-.api-url-inp:focus{border-color:#7c3aed}
-.api-url-inp::placeholder{color:#cbd5e1}
-.price-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.spin{display:inline-block;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -215,7 +140,6 @@ canvas{border-radius:8px}
       <button class="tab on" onclick="sw('portfolio')">📋 증권사별 입력</button>
       <button class="tab" onclick="sw('index')">📈 지수별 비중</button>
       <button class="tab" onclick="sw('rec')">💡 비중 추천</button>
-      <button class="tab" onclick="sw('sim')">🔮 투자 시뮬레이션</button>
       <button class="tab" onclick="sw('summary')">📊 전체 현황</button>
     </div>
   </div>
@@ -225,7 +149,6 @@ canvas{border-radius:8px}
   <div class="page on" id="p-portfolio"></div>
   <div class="page" id="p-index"></div>
   <div class="page" id="p-rec"></div>
-  <div class="page" id="p-sim"></div>
   <div class="page" id="p-summary"></div>
 </div>
 
@@ -322,115 +245,37 @@ const AGE_PROFILES = {
 // ── 데이터 ───────────────────────────────────────────
 let uid=0;
 const nid=()=>++uid;
-const newEtf=(name,sh,pr,bp='')=>({id:nid(),name,sh,pr,bp}); // bp = 매수평균가
+const newEtf=(name,sh,pr)=>({id:nid(),name,sh,pr});
 let selectedAge='40대';
 
-const DEFAULT_BROKERS=[
-  {name:'삼성증권',irp:false,etfs:[
-    {name:'KODEX 미국나스닥100',   sh:'2232',pr:'25770',bp:'18979'},
-    {name:'KODEX 미국배당다우존스',sh:'764', pr:'12380',bp:'10923'},
-    {name:'KODEX 미국S&P500',      sh:'506', pr:'23560',bp:'21139'},
+let brokers=[
+  {id:nid(),name:'삼성증권',irp:false,etfs:[
+    newEtf('KODEX 미국나스닥100','2232','24452'),
+    newEtf('KODEX 미국배당다우존스','764','12490'),
+    newEtf('KODEX 미국S&P500','506','22700'),
   ]},
-  {name:'한국투자증권',irp:false,etfs:[
-    {name:'TIGER 미국배당다우존스',sh:'1498',pr:'14385',bp:'12141'},
-    {name:'KODEX 미국배당다우존스',sh:'862', pr:'12380',bp:'10577'},
+  {id:nid(),name:'한국투자증권',irp:false,etfs:[
+    newEtf('TIGER 미국배당다우존스','1485','14485'),
+    newEtf('KODEX 미국배당다우존스','848','12490'),
   ]},
-  {name:'KB증권',irp:false,etfs:[
-    {name:'KODEX 미국S&P500',      sh:'167',pr:'23560',bp:'22606'},
-    {name:'KODEX 미국나스닥100',   sh:'1',  pr:'25770',bp:'23870'},
-    {name:'TIGER 미국배당다우존스',sh:'300',pr:'14385',bp:'13857'},
+  {id:nid(),name:'KB증권',irp:false,etfs:[
+    newEtf('KODEX 미국나스닥100','1','24452'),
+    newEtf('TIGER 미국배당다우존스','299','14485'),
+    newEtf('KODEX 미국S&P500','164','22700'),
   ]},
-  {name:'NH투자증권 (IRP·DC)',irp:true,etfs:[
-    {name:'TIGER 미국S&P500',           sh:'13',pr:'25105',bp:'24559'},
-    {name:'SOL 미국배당다우존스',        sh:'48',pr:'13345',bp:'11941'},
-    {name:'TIGER 미국배당다우존스',      sh:'44',pr:'14385',bp:'12924'},
-    {name:'SOL 미국S&P500미국채혼합50',  sh:'64',pr:'11245',bp:'11070'},
+  {id:nid(),name:'NH투자증권 (일반)',irp:false,etfs:[
+    newEtf('SOL 미국S&P500미국채혼합50','',''),
+    newEtf('TIGER 미국배당다우존스','',''),
+    newEtf('SOL 미국배당다우존스','',''),
+    newEtf('TIGER 미국S&P500','',''),
+  ]},
+  {id:nid(),name:'NH투자증권 (IRP·DC)',irp:true,etfs:[
+    newEtf('TIGER 미국S&P500','13','24825'),
+    newEtf('SOL 미국배당다우존스','48','13290'),
+    newEtf('TIGER 미국배당다우존스','44','14485'),
+    newEtf('SOL 미국S&P500미국채혼합50','64','11180'),
   ]},
 ];
-
-// localStorage에서 불러오기
-function loadBrokers() {
-  try {
-    const saved = localStorage.getItem('etf_brokers');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return parsed.map(b => {
-        const defB = DEFAULT_BROKERS.find(d => d.name === b.name);
-        return {
-          ...b, id: nid(),
-          etfs: b.etfs.map(e => {
-            const defE = defB && defB.etfs.find(d => d.name === e.name);
-            return {...e, id: nid(), bp: (e.bp && e.bp !== '') ? e.bp : (defE ? defE.bp : '')};
-          })
-        };
-      });
-    }
-  } catch(e) {}
-  return DEFAULT_BROKERS.map(b => ({
-    ...b, id: nid(),
-    etfs: b.etfs.map(e => ({...e, id: nid(), bp: e.bp||''}))
-  }));
-}
-
-function saveBrokers() {
-  try {
-    const toSave = brokers.map(b => ({
-      name: b.name, irp: b.irp,
-      etfs: b.etfs.map(e => ({name:e.name, sh:e.sh, pr:e.pr, bp:e.bp||''}))
-    }));
-    localStorage.setItem('etf_brokers', JSON.stringify(toSave));
-  } catch(e) {}
-}
-
-let brokers = loadBrokers();
-
-// ── 가격 연동 상태 (심플) ────────────────────────────
-// ── 가격 연동 상태 (심플) ────────────────────────────
-let priceApi = {
-  url: localStorage.getItem('etf_api_url') || '',
-  status: 'idle',  // idle | loading | success | error
-  message: 'URL 입력 후 버튼 클릭',
-  lastUpdated: '',
-};
-
-async function fetchPricesFromAPI() {
-  if (!priceApi.url.trim()) {
-    priceApi.status = 'error'; priceApi.message = 'Apps Script URL을 입력해주세요';
-    renderPortfolio(); return;
-  }
-  priceApi.status = 'loading'; priceApi.message = '현재가 조회 중...'; renderPortfolio();
-
-  const names = [...new Set(brokers.flatMap(b => b.etfs.map(e => e.name.trim())).filter(Boolean))];
-  const cbName = 'priceCallback_' + Date.now();
-  const url = priceApi.url.trim() + '?names=' + encodeURIComponent(names.join('|')) + '&callback=' + cbName;
-
-  try {
-    await new Promise((resolve, reject) => {
-      const timer = setTimeout(() => { delete window[cbName]; reject(new Error('시간 초과 (30초)')); }, 30000);
-      window[cbName] = (data) => {
-        clearTimeout(timer); delete window[cbName];
-        if (!data.success) { reject(new Error('API 오류')); return; }
-        let updated = 0, failed = 0;
-        brokers.forEach(b => b.etfs.forEach(e => {
-          const info = data.prices[e.name.trim()];
-          if (info && info.price) { e.pr = String(info.price); updated++; }
-          else failed++;
-        }));
-        saveBrokers();
-        priceApi.status = 'success';
-        priceApi.lastUpdated = data.updatedAt || new Date().toLocaleString('ko-KR');
-        priceApi.message = `✅ ${updated}개 업데이트 완료${failed>0?' ('+failed+'개 실패)':''}`;
-        renderAll(); resolve();
-      };
-      const s = document.createElement('script'); s.src = url;
-      s.onerror = () => { clearTimeout(timer); delete window[cbName]; reject(new Error('스크립트 로드 실패')); };
-      document.head.appendChild(s); setTimeout(() => s.remove(), 35000);
-    });
-  } catch(err) {
-    priceApi.status = 'error'; priceApi.message = '❌ ' + err.message; renderPortfolio();
-  }
-}
-
 
 // ── 계산 헬퍼 ──────────────────────────────────────
 const val=(e)=>(parseFloat(e.sh)||0)*(parseFloat(e.pr)||0);
@@ -494,11 +339,10 @@ function indexStats(colIdx) {
 }
 
 // ── 탭 전환 ──────────────────────────────────────────
-const tabIds=['portfolio','index','rec','sim','summary'];
+const tabIds=['portfolio','index','rec','summary'];
 function sw(id){
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',tabIds[i]===id));
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id==='p-'+id));
-  if(id==='sim') renderSim();
 }
 
 // ── 헤더 ─────────────────────────────────────────────
@@ -518,64 +362,8 @@ function updateHeader(){
 // ── 포트폴리오 탭 ────────────────────────────────────
 function renderPortfolio(){
   const pg=document.getElementById('p-portfolio');pg.innerHTML='';
-
-  // ── 현재가 연동 배너 ──
-  const apiSetup=document.createElement('div');apiSetup.className='api-setup-area';
-  const apiTitle=document.createElement('div');apiTitle.className='api-setup-title';apiTitle.textContent='🔗 실시간 현재가 연동 (Apps Script)';
-  const apiUrlInp=document.createElement('input');apiUrlInp.className='api-url-inp';
-  apiUrlInp.placeholder='Apps Script 배포 URL (https://script.google.com/macros/s/.../exec)';
-  apiUrlInp.value=priceApi.url;
-  apiUrlInp.oninput=()=>{ priceApi.url=apiUrlInp.value; localStorage.setItem('etf_api_url',priceApi.url); };
-  const fetchBtn=document.createElement('button');fetchBtn.className='price-fetch-btn';
-  fetchBtn.textContent='💹 현재가 업데이트';fetchBtn.onclick=()=>fetchPricesFromAPI();
-  apiSetup.append(apiTitle,apiUrlInp,fetchBtn);
-  pg.appendChild(apiSetup);
-
-  // 상태 배너
-  const stMap={idle:{cls:'idle',dot:'#94a3b8'},loading:{cls:'loading',dot:'#3b82f6'},success:{cls:'success',dot:'#16a34a'},error:{cls:'error',dot:'#ef4444'}};
-  const st=stMap[priceApi.status]||stMap.idle;
-  const banner=document.createElement('div');banner.className=`price-banner ${st.cls}`;
-  const bLeft=document.createElement('div');
-  const bTxt=document.createElement('div');bTxt.className='price-banner-txt';bTxt.textContent=priceApi.message;
-  const bSub=document.createElement('div');bSub.className='price-banner-sub';
-  bSub.textContent=priceApi.lastUpdated?`마지막 업데이트: ${priceApi.lastUpdated}`:'버튼을 눌러 현재가를 가져오세요';
-  bLeft.append(bTxt,bSub);
-  const bDot=document.createElement('div');bDot.className='price-dot';bDot.style.background=st.dot;
-  banner.append(bDot,bLeft);pg.appendChild(banner);
-
-  // ── 수익률 요약 ──
-  const gt=gTot();
-  const totalBuy=brokers.reduce((s,b)=>s+b.etfs.reduce((s2,e)=>s2+(parseFloat(e.sh)||0)*(parseFloat(e.bp)||0),0),0);
-  if(gt>0&&totalBuy>0){
-    const gain=gt-totalBuy,gainPct=(gain/totalBuy)*100;
-    const sg=document.createElement('div');sg.className='profit-summary';
-    [
-      {lb:'총 매수금액',val:fmtW(totalBuy),bg:'#f8fafc',c:'#475569'},
-      {lb:'총 평가금액',val:fmtW(gt),bg:'#eff6ff',c:'#6366f1'},
-      {lb:'평가손익',val:(gain>=0?'+':'')+fmtW(gain),sub:(gain>=0?'+':'')+gainPct.toFixed(2)+'%',bg:gain>=0?'#f0fdf4':'#fef2f2',c:gain>=0?'#16a34a':'#ef4444'},
-    ].forEach(s=>{
-      const sc=document.createElement('div');sc.className='ps-card';sc.style.background=s.bg;
-      const lb=document.createElement('div');lb.className='ps-lbl';lb.textContent=s.lb;
-      const vl=document.createElement('div');vl.className='ps-val';vl.style.color=s.c;vl.textContent=s.val;
-      sc.append(lb,vl);
-      if(s.sub){const sb=document.createElement('div');sb.className='ps-sub';sb.style.color=s.c;sb.textContent=s.sub;sc.appendChild(sb);}
-      sg.appendChild(sc);
-    });
-    pg.appendChild(sg);
-  }
-
   const topBar=document.createElement('div');topBar.className='top-bar';
   const hint=document.createElement('div');hint.className='hint-txt';hint.textContent='주수·현재가 입력 → 평가금액 자동 계산';
-  const btnGrp=document.createElement('div');btnGrp.style.cssText='display:flex;gap:6px';
-  const resetBtn=document.createElement('button');resetBtn.className='btn-add';
-  resetBtn.style.cssText='color:#ef4444;border-color:#fecaca;font-size:10px';
-  resetBtn.textContent='🔄 초기화';
-  resetBtn.onclick=()=>{
-    if(confirm('데이터를 초기화하면 입력한 주수/평균가가 모두 기본값으로 돌아갑니다. 계속하시겠어요?')){
-      localStorage.removeItem('etf_brokers');
-      location.reload();
-    }
-  };
   const panel=document.createElement('div');panel.className='add-broker-panel';
   const bSel=document.createElement('select');bSel.className='add-broker-sel';
   const defOpt=document.createElement('option');defOpt.value='';defOpt.textContent='증권사 선택';bSel.appendChild(defOpt);
@@ -589,8 +377,7 @@ function renderPortfolio(){
   panel.append(bSel,bInp,okBtn,clBtn);
   const addBtn=document.createElement('button');addBtn.className='btn-add';addBtn.textContent='+ 증권사 추가';
   addBtn.onclick=()=>{panel.style.display=panel.style.display==='flex'?'none':'flex';};
-  btnGrp.append(resetBtn,addBtn);
-  topBar.append(hint,btnGrp);pg.append(topBar,panel);
+  topBar.append(hint,addBtn);pg.append(topBar,panel);
   brokers.forEach((b,bi)=>pg.appendChild(makeBrokerCard(b,bi)));
 }
 
@@ -616,7 +403,7 @@ function makeBrokerCard(b,bi){
   barBg.appendChild(barFill);
   const etfSec=document.createElement('div');etfSec.className='etf-section';
   const colHdr=document.createElement('div');colHdr.className='etf-col-hdr';
-  ['ETF 상품명','주수','평균단가','현재가'].forEach(t=>{const s=document.createElement('span');s.textContent=t;colHdr.appendChild(s);});
+  ['ETF 상품명','보유 주수','현재가(원)'].forEach(t=>{const s=document.createElement('span');s.textContent=t;colHdr.appendChild(s);});
   etfSec.appendChild(colHdr);
   const etfWrap=document.createElement('div');
   const rebuildEtfs=()=>{etfWrap.innerHTML='';b.etfs.forEach(e=>etfWrap.appendChild(makeEtfItem(b,e,gt,rebuildEtfs)));};
@@ -636,49 +423,17 @@ function makeEtfItem(b,e,gt,rebuild){
   const nameWrap=document.createElement('div');nameWrap.className='etf-name-wrap';
   const emSpan=document.createElement('span');emSpan.className='etf-emoji';emSpan.textContent=e.name?getCat(e.name).em:'';
   const nInp=document.createElement('input');nInp.className='etf-name-inp';nInp.placeholder='ETF명';nInp.value=e.name;
-  nInp.oninput=()=>{e.name=nInp.value;emSpan.textContent=e.name?getCat(e.name).em:'';updateBot();};
-  nInp.onblur=()=>{saveBrokers();updateHeader();};
+  nInp.oninput=()=>{e.name=nInp.value;emSpan.textContent=e.name?getCat(e.name).em:'';updateBot();renderAll();};
   nameWrap.append(emSpan,nInp);
-
-  const shInp=document.createElement('input');shInp.className='etf-num-inp';shInp.type='number';shInp.min='0';shInp.placeholder='주수';shInp.value=e.sh;
-  shInp.oninput=()=>{e.sh=shInp.value;updateBot();};
-  shInp.onblur=()=>{saveBrokers();updateHeader();};
-
-  // 매수평균가 (노란 배경)
-  const bpInp=document.createElement('input');bpInp.className='etf-num-inp buy';bpInp.type='number';bpInp.min='0';bpInp.placeholder='평균가';bpInp.value=e.bp||'';
-  bpInp.title='매수 평균가';
-  bpInp.oninput=()=>{e.bp=bpInp.value;updateBot();};
-  bpInp.onblur=()=>{saveBrokers();};
-
-  const prInp=document.createElement('input');prInp.className='etf-num-inp';prInp.type='number';prInp.min='0';prInp.placeholder='현재가';prInp.value=e.pr;
-  prInp.oninput=()=>{e.pr=prInp.value;updateBot();};
-  prInp.onblur=()=>{saveBrokers();updateHeader();};
-
-  top.append(nameWrap,shInp,bpInp,prInp);
-
+  const shInp=document.createElement('input');shInp.className='etf-num-inp';shInp.type='number';shInp.min='0';shInp.placeholder='0';shInp.value=e.sh;shInp.oninput=()=>{e.sh=shInp.value;updateBot();renderAll();};
+  const prInp=document.createElement('input');prInp.className='etf-num-inp';prInp.type='number';prInp.min='0';prInp.placeholder='0';prInp.value=e.pr;prInp.oninput=()=>{e.pr=prInp.value;updateBot();renderAll();};
+  top.append(nameWrap,shInp,prInp);
   const bot=document.createElement('div');bot.className='etf-item-bot';
-  const valDiv=document.createElement('div');
-  const pctDiv=document.createElement('span');
-  const profitDiv=document.createElement('span');profitDiv.className='etf-profit zero';
-  const delBtn=document.createElement('button');delBtn.className='etf-del';delBtn.textContent='✕';
-  delBtn.onclick=()=>{b.etfs=b.etfs.filter(x=>x.id!==e.id);rebuild();renderAll();};
-
-  function updateBot(){
-    const gt2=gTot();
-    const sh=parseFloat(e.sh)||0,pr=parseFloat(e.pr)||0,bp=parseFloat(e.bp)||0;
-    const curVal=sh*pr,buyVal=sh*bp,p2=gt2>0?pct(curVal,gt2):0;
-    if(curVal>0){valDiv.className='etf-val';valDiv.textContent=fmtW(curVal);pctDiv.className='etf-pct';pctDiv.textContent=' · '+fmtP(p2);}
-    else{valDiv.className='etf-val empty';valDiv.textContent='-';pctDiv.textContent='';}
-    if(buyVal>0&&curVal>0){
-      const gp=((pr-bp)/bp)*100,ga=curVal-buyVal;
-      profitDiv.className='etf-profit '+(gp>=0?'pos':'neg');
-      profitDiv.textContent=(gp>=0?'+':'')+gp.toFixed(2)+'% ('+(ga>=0?'+':'')+fmtW(ga)+')';
-    }else{profitDiv.className='etf-profit zero';profitDiv.textContent='';}
-  }
+  const valDiv=document.createElement('div');const pctDiv=document.createElement('span');
+  const delBtn=document.createElement('button');delBtn.className='etf-del';delBtn.textContent='✕';delBtn.onclick=()=>{b.etfs=b.etfs.filter(x=>x.id!==e.id);rebuild();renderAll();};
+  function updateBot(){const v=val(e),p2=pct(v,gt);if(v>0){valDiv.className='etf-val';valDiv.textContent=fmtW(v);pctDiv.className='etf-pct';pctDiv.textContent=' · '+fmtP(p2);}else{valDiv.className='etf-val empty';valDiv.textContent='-';pctDiv.textContent='';}}
   updateBot();
-
-  const valWrap=document.createElement('div');valWrap.style.cssText='display:flex;align-items:center;gap:4px;flex-wrap:wrap';
-  valWrap.append(valDiv,pctDiv,profitDiv);
+  const valWrap=document.createElement('div');valWrap.style.cssText='display:flex;align-items:center';valWrap.append(valDiv,pctDiv);
   bot.append(valWrap,delBtn);item.append(top,bot);return item;
 }
 
@@ -993,412 +748,12 @@ function renderSummary(){
   pg.appendChild(gc);
 }
 
-// ── 시뮬레이션 상태 ──────────────────────────────────
-let simState = {
-  age: 45,
-  monthly: 100,   // 만원
-  investYears: 8, // 적립 기간 (년)
-  years: 60,      // 총 시뮬레이션 기간
-  scenario: 'mid',
-  ran: false,
-  results: null,
-};
-
-// 시나리오별 연간 수익률 가정
-const SCENARIOS = {
-  opt: { label:'낙관', color:'#16a34a', bg:'#f0fdf4', bd:'#bbf7d0',
-    nasdaq:14, sp500:11, dow:9,   desc:'AI·기술 호황 지속, 역사적 상위 25% 수준' },
-  mid: { label:'중립', color:'#6366f1', bg:'#eff6ff', bd:'#bfdbfe',
-    nasdaq:10, sp500: 8, dow:7,   desc:'역사적 평균 수준 (1995~2024 CAGR 기반)' },
-  pes: { label:'비관', color:'#ef4444', bg:'#fef2f2', bd:'#fecaca',
-    nasdaq: 5, sp500: 4, dow:3,   desc:'저성장·고금리 장기화, 역사적 하위 25% 수준' },
-};
-
-function blendReturn(sc, nasP, spP, dwP) {
-  const s = SCENARIOS[sc];
-  return (s.nasdaq*(nasP/100) + s.sp500*(spP/100) + s.dow*(dwP/100));
-}
-
-// 몬테카를로: 역사 연도 무작위 샘플링 + 적립 기간 반영
-function monteCarloSimulate(initAmt, monthlyKRW, investYrs, totalYrs, nasP, spP, dwP, runs=500) {
-  const pool = HIST.map(r => r[1]*(nasP/100) + r[2]*(spP/100) + r[3]*(dwP/100));
-  const allPaths = [];
-  for(let r=0;r<runs;r++){
-    let amt = initAmt;
-    for(let y=0;y<totalYrs;y++){
-      const ret = pool[Math.floor(Math.random()*pool.length)];
-      const contrib = y < investYrs ? monthlyKRW*12*10000 : 0;
-      amt = amt*(1+ret/100) + contrib;
-    }
-    allPaths.push(amt);
-  }
-  allPaths.sort((a,b)=>a-b);
-  return {
-    p10: allPaths[Math.floor(runs*0.1)],
-    p25: allPaths[Math.floor(runs*0.25)],
-    p50: allPaths[Math.floor(runs*0.5)],
-    p75: allPaths[Math.floor(runs*0.75)],
-    p90: allPaths[Math.floor(runs*0.9)],
-  };
-}
-
-// 복리 시뮬레이션 — 적립 기간 분리 반영
-function simPath(initAmt, monthlyKRW, investYrs, totalYrs, annualRet) {
-  const path = [initAmt];
-  let amt = initAmt;
-  for(let y=1;y<=totalYrs;y++){
-    const contrib = y <= investYrs ? monthlyKRW*12*10000 : 0;
-    amt = amt*(1+annualRet/100) + contrib;
-    path.push(amt);
-  }
-  return path;
-}
-
-// ── 시뮬레이션 탭 렌더 ───────────────────────────────
-function renderSim() {
-  const pg = document.getElementById('p-sim');
-  pg.innerHTML = '';
-
-  const gt = gTot();
-  const prof = AGE_PROFILES[selectedAge];
-  const nasP = prof.nasdaq, spP = prof.sp500, dwP = prof.dow;
-
-  // ── 입력 히어로 카드 ──
-  const hero = document.createElement('div'); hero.className='sim-hero';
-  const ht = document.createElement('div'); ht.className='sim-hero-title'; ht.textContent='🔮 투자 성과 시뮬레이션';
-  const hs = document.createElement('div'); hs.className='sim-hero-sub'; hs.textContent='현재 포트폴리오 기준 미래 자산 예측 (몬테카를로 + 3가지 시나리오)';
-  hero.append(ht, hs);
-
-  const grid = document.createElement('div'); grid.className='sim-inputs';
-
-  // 현재 나이
-  const g1 = document.createElement('div'); g1.className='sim-input-group';
-  const l1 = document.createElement('div'); l1.className='sim-input-lbl'; l1.textContent='현재 나이 (세)';
-  const i1 = document.createElement('input'); i1.className='sim-inp'; i1.type='number'; i1.min='20'; i1.max='80'; i1.value=simState.age; i1.placeholder='45';
-  i1.oninput=()=>{ simState.age=parseInt(i1.value)||45; };
-  g1.append(l1,i1);
-
-  // 시뮬레이션 기간
-  const g2 = document.createElement('div'); g2.className='sim-input-group';
-  const l2 = document.createElement('div'); l2.className='sim-input-lbl'; l2.textContent='시뮬레이션 기간 (년, 최대 60)';
-  const i2 = document.createElement('input'); i2.className='sim-inp'; i2.type='number'; i2.min='5'; i2.max='60'; i2.value=simState.years; i2.placeholder='60';
-  i2.oninput=()=>{ simState.years=parseInt(i2.value)||60; };
-  g2.append(l2,i2);
-
-  // 월 추가 적립
-  const g3 = document.createElement('div'); g3.className='sim-input-group';
-  const l3 = document.createElement('div'); l3.className='sim-input-lbl'; l3.textContent='월 추가 적립 (만원)';
-  const i3 = document.createElement('input'); i3.className='sim-inp'; i3.type='number'; i3.min='0'; i3.value=simState.monthly; i3.placeholder='100';
-  i3.oninput=()=>{ simState.monthly=parseFloat(i3.value)||0; };
-  g3.append(l3,i3);
-
-  // 적립 기간
-  const g5 = document.createElement('div'); g5.className='sim-input-group';
-  const l5 = document.createElement('div'); l5.className='sim-input-lbl'; l5.textContent='적립 가능 기간 (년)';
-  const i5 = document.createElement('input'); i5.className='sim-inp'; i5.type='number'; i5.min='0'; i5.max='60'; i5.value=simState.investYears; i5.placeholder='8';
-  const stopAgeDisp = document.createElement('div');
-  stopAgeDisp.style.cssText='font-size:9px;color:rgba(255,255,255,.5);margin-top:3px';
-  const updateStopAge=()=>{
-    const stopAge = simState.age + (parseInt(i5.value)||0);
-    stopAgeDisp.textContent=`→ ${stopAge}세까지 적립 후 복리만`;
-  };
-  i5.oninput=()=>{ simState.investYears=parseInt(i5.value)||0; updateStopAge(); };
-  updateStopAge();
-  g5.append(l5,i5,stopAgeDisp);
-
-  // 현재 자산 (자동)
-  const g4 = document.createElement('div'); g4.className='sim-input-group';
-  const l4 = document.createElement('div'); l4.className='sim-input-lbl'; l4.textContent='현재 ETF 자산 (자동)';
-  const v4 = document.createElement('div'); v4.className='sim-input-val'; v4.textContent=fmtW(gt)||'입력 필요';
-  v4.style.fontSize='13px';
-  g4.append(l4,v4);
-
-  grid.append(g1,g2,g3,g5,g4);
-  // 5개 → 2열이므로 마지막 하나는 full-width
-  g4.style.gridColumn='1 / -1';
-
-  const runBtn = document.createElement('button'); runBtn.className='sim-run-btn';
-  runBtn.textContent='🚀 시뮬레이션 실행';
-  runBtn.onclick=()=>{
-    simState.ran=true;
-    renderSim();
-  };
-
-  hero.append(grid,runBtn);
-  pg.appendChild(hero);
-
-  if(!simState.ran){
-    const hint=document.createElement('div');hint.style.cssText='text-align:center;padding:48px 0;color:#94a3b8;font-size:13px';
-    hint.innerHTML='위 정보를 확인하고<br><strong style="color:#6366f1">시뮬레이션 실행</strong> 버튼을 눌러주세요';
-    pg.appendChild(hint);
-    return;
-  }
-
-  if(gt===0){
-    const hint=document.createElement('div');hint.style.cssText='text-align:center;padding:32px;color:#94a3b8;font-size:13px';
-    hint.textContent='먼저 증권사별 입력 탭에서 현재 자산을 입력해 주세요';
-    pg.appendChild(hint);return;
-  }
-
-  const yrs = Math.max(1, Math.min(60, simState.years));
-  const monthly = simState.monthly;
-  const investYrs = Math.min(simState.investYears, yrs);
-  const initAmt = gt;
-
-  // ── 적립 현황 요약 배너 ──
-  const contribBanner = document.createElement('div');
-  contribBanner.style.cssText='background:#fef9c3;border:1.5px solid #fde68a;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#854d0e;display:flex;gap:6px;align-items:flex-start';
-  const contribIcon = document.createElement('span'); contribIcon.textContent='💡';
-  const contribTxt = document.createElement('div');
-  const stopAge = simState.age + investYrs;
-  const totalContrib = monthly * 12 * investYrs * 10000;
-  contribTxt.innerHTML=`<strong>적립 플랜:</strong> 월 ${monthly}만원 × ${investYrs}년 = 총 ${fmtW(totalContrib)} 추가 납입<br>`
-    +`<span style="color:#92400e">${simState.age}세 → ${stopAge}세까지 적립</span>, 이후 ${simState.age+yrs}세(${yrs}년 후)까지 복리 운용`;
-  contribBanner.append(contribIcon, contribTxt);
-  pg.appendChild(contribBanner);
-
-  // ── 시나리오 탭 ──
-  const stabs = document.createElement('div'); stabs.className='sim-scenario-tabs';
-  ['opt','mid','pes'].forEach(sc=>{
-    const s=SCENARIOS[sc];
-    const b=document.createElement('button');b.className='sim-stab'+(sc===simState.scenario?' on':'');
-    b.textContent=s.label+' 시나리오';
-    if(sc===simState.scenario){b.style.background=s.color;}
-    b.onclick=()=>{simState.scenario=sc;renderSim();};
-    stabs.appendChild(b);
-  });
-  pg.appendChild(stabs);
-
-  const sc=simState.scenario;
-  const S=SCENARIOS[sc];
-  const annualRet = blendReturn(sc, nasP, spP, dwP);
-  const path = simPath(initAmt, monthly, investYrs, yrs, annualRet);
-  const finalAmt = path[path.length-1];
-  const invested = initAmt + totalContrib;
-  const gain = finalAmt - invested;
-  const mul = finalAmt/initAmt;
-
-  // ── 핵심 결과 카드 ──
-  const resGrid = document.createElement('div'); resGrid.className='sim-result-grid';
-  [
-    {lb:'예상 최종 자산', val:fmtW(finalAmt), sub:`${yrs}년 후 (${simState.age+yrs}세)`, c:S.color, bg:S.bg},
-    {lb:'총 투자 원금', val:fmtW(invested), sub:`현재 ${fmtW(initAmt)} + 적립 ${fmtW(monthly*12*10000*yrs)}`, c:'#475569', bg:'#f8fafc'},
-    {lb:'예상 수익금', val:fmtW(gain), sub:`수익률 ${((gain/invested)*100).toFixed(1)}%`, c:gain>0?'#16a34a':'#ef4444', bg:gain>0?'#f0fdf4':'#fef2f2'},
-    {lb:'자산 증가 배수', val:mul.toFixed(1)+'배', sub:`연평균 ${annualRet.toFixed(1)}% 가정`, c:S.color, bg:S.bg},
-  ].forEach(r=>{
-    const c2=document.createElement('div');c2.className='sim-r-card';c2.style.background=r.bg;
-    const lb=document.createElement('div');lb.className='sim-r-lbl';lb.style.color=r.c;lb.textContent=r.lb;
-    const vl=document.createElement('div');vl.className='sim-r-val';vl.style.color=r.c;vl.textContent=r.val;
-    const sb=document.createElement('div');sb.className='sim-r-sub';sb.style.color=r.c;sb.textContent=r.sub;
-    c2.append(lb,vl,sb);resGrid.appendChild(c2);
-  });
-  pg.appendChild(resGrid);
-
-  // ── 차트 ──
-  const chartCard = document.createElement('div'); chartCard.className='card';
-  const chartTitle = document.createElement('div'); chartTitle.style.cssText='font-size:13px;font-weight:700;margin-bottom:8px';
-  chartTitle.textContent='📈 연도별 자산 성장 추이';
-
-  const wrap = document.createElement('div'); wrap.className='chart-wrap';
-  const canvas = document.createElement('canvas');
-  canvas.style.cssText='width:100%;height:100%';
-  canvas.width=700; canvas.height=220;
-  wrap.appendChild(canvas);
-
-  chartCard.append(chartTitle, wrap);
-  pg.appendChild(chartCard);
-
-  // 3가지 시나리오 경로 모두 그리기
-  const pathOpt = simPath(initAmt, monthly, investYrs, yrs, blendReturn('opt',nasP,spP,dwP));
-  const pathMid = simPath(initAmt, monthly, investYrs, yrs, blendReturn('mid',nasP,spP,dwP));
-  const pathPes = simPath(initAmt, monthly, investYrs, yrs, blendReturn('pes',nasP,spP,dwP));
-
-  // 몬테카를로 밴드
-  const mc = monteCarloSimulate(initAmt, monthly, investYrs, yrs, nasP, spP, dwP, 300);
-
-  // 래퍼 필요: 렌더 완료 후 canvas에 그리기
-  requestAnimationFrame(()=>drawChart(canvas, yrs, pathOpt, pathMid, pathPes, simState.age, investYrs));
-
-  // ── 3가지 시나리오 비교 ──
-  const cmpCard = document.createElement('div'); cmpCard.className='card';
-  const cmpTitle = document.createElement('div'); cmpTitle.style.cssText='font-size:13px;font-weight:700;margin-bottom:10px';
-  cmpTitle.textContent='🔀 3가지 시나리오 비교';
-
-  const table = document.createElement('table'); table.className='scenario-compare';
-  const thead = document.createElement('thead'); const tr0 = document.createElement('tr');
-  ['구분','연수익률','최종자산','원금대비'].forEach(h=>{const th=document.createElement('th');th.textContent=h;tr0.appendChild(th);});
-  thead.appendChild(tr0); table.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
-  ['opt','mid','pes'].forEach(key=>{
-    const s2=SCENARIOS[key];
-    const r2=blendReturn(key,nasP,spP,dwP);
-    const p2=simPath(initAmt,monthly,investYrs,yrs,r2);
-    const fin=p2[p2.length-1];
-    const tr2=document.createElement('tr');
-    const cells=[
-      {txt:`${s2.label} (${s2.desc.slice(0,12)}..)`,bold:true,c:'#1e293b'},
-      {txt:fmtP(r2),c:s2.color},
-      {txt:fmtW(fin),c:s2.color},
-      {txt:(fin/invested*100).toFixed(0)+'%',c:s2.color},
-    ];
-    cells.forEach((cl,i)=>{
-      const td=document.createElement('td');td.textContent=cl.txt;td.style.color=cl.c;
-      if(cl.bold)td.style.fontWeight='600';
-      if(i>0)td.style.fontWeight='700';
-      tr2.appendChild(td);
-    });
-    tbody.appendChild(tr2);
-  });
-  table.appendChild(tbody);
-
-  // 몬테카를로 결과
-  const mcNote = document.createElement('div');
-  mcNote.style.cssText='margin-top:10px;background:#f8fafc;border-radius:9px;padding:10px 12px';
-  const mcTitle2 = document.createElement('div'); mcTitle2.style.cssText='font-size:11px;font-weight:700;color:#475569;margin-bottom:6px';
-  mcTitle2.textContent=`🎲 몬테카를로 시뮬레이션 (300회, ${yrs}년)`;
-  const mcGrid = document.createElement('div'); mcGrid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:6px';
-  [
-    {lb:'상위 25% (낙관)',val:fmtW(mc.p75),c:'#16a34a'},
-    {lb:'중간값 (현실)',val:fmtW(mc.p50),c:'#6366f1'},
-    {lb:'하위 25% (비관)',val:fmtW(mc.p25),c:'#ef4444'},
-  ].forEach(m=>{
-    const mc2=document.createElement('div');mc2.style.cssText='text-align:center';
-    const ml=document.createElement('div');ml.style.cssText='font-size:9px;color:#94a3b8;font-weight:600';ml.textContent=m.lb;
-    const mv=document.createElement('div');mv.style.cssText=`font-size:12px;font-weight:800;color:${m.c};margin-top:2px`;mv.textContent=m.val;
-    mc2.append(ml,mv);mcGrid.appendChild(mc2);
-  });
-  mcNote.append(mcTitle2,mcGrid);
-  cmpCard.append(cmpTitle,table,mcNote);
-  pg.appendChild(cmpCard);
-
-  // ── 마일스톤 ──
-  const msCard = document.createElement('div'); msCard.className='card';
-  const msTitle = document.createElement('div'); msTitle.style.cssText='font-size:13px;font-weight:700;margin-bottom:12px';
-  msTitle.textContent='🏁 연도별 마일스톤 ('+S.label+' 시나리오)';
-  const msList = document.createElement('div'); msList.className='milestones';
-
-  const milestones = [];
-  const checkpoints = [1,3,5,10,15,20,25,30,40,50,60].filter(y=>y<=yrs);
-  checkpoints.forEach(y=>{
-    const amt=path[y];
-    const age2=simState.age+y;
-    milestones.push({year:y,age:age2,amt});
-  });
-
-  milestones.forEach(m=>{
-    const row=document.createElement('div');row.className='ms-row';
-    const yr=document.createElement('div');yr.className='ms-year';yr.textContent='+'+m.year+'년';
-    const dot=document.createElement('div');dot.className='ms-dot';dot.style.background=S.color;
-    const info=document.createElement('div');info.className='ms-info';
-    const amt=document.createElement('div');amt.className='ms-amt';amt.style.color=S.color;amt.textContent=fmtW(m.amt);
-    const sub=document.createElement('div');sub.className='ms-sub';sub.textContent=m.age+'세 시점';
-    info.append(amt,sub);
-    const badge=document.createElement('div');badge.className='ms-badge';
-    if(m.amt>=100000000){badge.style.cssText=`background:#fef9c3;color:#854d0e`;badge.textContent='💰 '+Math.floor(m.amt/100000000)+'억+';}
-    else{badge.style.cssText='background:#f1f5f9;color:#64748b';badge.textContent=fmtW(m.amt);}
-    row.append(yr,dot,info,badge);
-    msList.appendChild(row);
-  });
-
-  msCard.append(msTitle,msList);
-  pg.appendChild(msCard);
-
-  // 면책 고지
-  const notice=document.createElement('div');notice.className='notice';
-  notice.textContent='⚠️ 본 시뮬레이션은 역사적 데이터(1995~2024)를 기반으로 한 참고용 예측입니다. 실제 투자 결과는 시장 상황, 환율, 세금, 수수료 등에 따라 크게 다를 수 있습니다. 투자 결정 전 반드시 전문가와 상담하세요.';
-  pg.appendChild(notice);
-}
-
-// ── 차트 그리기 ──────────────────────────────────────
-function drawChart(canvas, yrs, pathOpt, pathMid, pathPes, startAge, investYrs) {
-  const ctx = canvas.getContext('2d');
-  if(!ctx) return;
-  const W=canvas.width, H=canvas.height;
-  const pad={top:20,right:20,bottom:36,left:64};
-  const cW=W-pad.left-pad.right, cH=H-pad.top-pad.bottom;
-
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#f8fafc'; ctx.fillRect(0,0,W,H);
-
-  const allVals=[...pathOpt,...pathMid,...pathPes];
-  const maxV=Math.max(...allVals), minV=0;
-  const range=maxV-minV||1;
-
-  const xPos=i=>(pad.left + (i/yrs)*cW);
-  const yPos=v=>(pad.top + cH - ((v-minV)/range)*cH);
-
-  // 격자선
-  ctx.strokeStyle='#e2e8f0'; ctx.lineWidth=0.5;
-  for(let i=0;i<=4;i++){
-    const y=pad.top+cH*(i/4);
-    ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(pad.left+cW,y);ctx.stroke();
-    const v=maxV*(1-i/4);
-    ctx.fillStyle='#94a3b8';ctx.font='10px Noto Sans KR,sans-serif';ctx.textAlign='right';
-    ctx.fillText(fmtW(v),pad.left-4,y+3);
-  }
-
-  // X축 라벨
-  const xTicks=yrs<=20?[0,5,10,15,20].filter(x=>x<=yrs):[0,10,20,30,40,50,60].filter(x=>x<=yrs);
-  ctx.fillStyle='#94a3b8';ctx.font='10px Noto Sans KR,sans-serif';ctx.textAlign='center';
-  xTicks.forEach(y=>{
-    const x=xPos(y);
-    ctx.fillText((startAge+y)+'세',x,H-4);
-    ctx.strokeStyle='#e2e8f0';ctx.lineWidth=0.5;
-    ctx.beginPath();ctx.moveTo(x,pad.top);ctx.lineTo(x,pad.top+cH);ctx.stroke();
-  });
-
-  // 적립 중단 시점 수직선
-  if(investYrs>0 && investYrs<yrs){
-    const sx=xPos(investYrs);
-    ctx.strokeStyle='#f59e0b'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
-    ctx.beginPath();ctx.moveTo(sx,pad.top);ctx.lineTo(sx,pad.top+cH);ctx.stroke();
-    ctx.setLineDash([]);
-    // 라벨
-    ctx.fillStyle='#f59e0b'; ctx.font='bold 9px Noto Sans KR,sans-serif'; ctx.textAlign='center';
-    ctx.fillText('적립종료 '+(startAge+investYrs)+'세', sx, pad.top+10);
-  }
-
-  // 면적 채우기 (낙관~비관 밴드)
-  ctx.beginPath();
-  for(let i=0;i<=yrs;i++) i===0?ctx.moveTo(xPos(i),yPos(pathOpt[i])):ctx.lineTo(xPos(i),yPos(pathOpt[i]));
-  for(let i=yrs;i>=0;i--) ctx.lineTo(xPos(i),yPos(pathPes[i]));
-  ctx.closePath();
-  ctx.fillStyle='rgba(99,102,241,0.07)';ctx.fill();
-
-  // 선 그리기 함수
-  const drawLine=(path,color,dash=[])=>{
-    ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=2;ctx.setLineDash(dash);
-    path.forEach((v,i)=>i===0?ctx.moveTo(xPos(i),yPos(v)):ctx.lineTo(xPos(i),yPos(v)));
-    ctx.stroke();ctx.setLineDash([]);
-  };
-
-  drawLine(pathPes,'#ef4444',[4,3]);
-  drawLine(pathOpt,'#16a34a',[4,3]);
-  drawLine(pathMid,'#6366f1');
-
-  // 범례
-  const legends=[{c:'#16a34a',lb:'낙관'},{c:'#6366f1',lb:'중립'},{c:'#ef4444',lb:'비관'},{c:'#f59e0b',lb:'적립종료',dash:true}];
-  let lx=pad.left;
-  legends.forEach(lg=>{
-    if(lg.dash){ctx.setLineDash([4,3]);}
-    ctx.strokeStyle=lg.c;ctx.lineWidth=2;
-    ctx.beginPath();ctx.moveTo(lx,12);ctx.lineTo(lx+16,12);ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle='#475569';ctx.font='10px Noto Sans KR,sans-serif';ctx.textAlign='left';
-    ctx.fillText(lg.lb,lx+20,15);
-    lx+=52;
-  });
-}
-
-
+// ── 전체 렌더 ─────────────────────────────────────────
 function renderAll(){
-  saveBrokers(); // 변경사항 자동 저장
   updateHeader();
   const activeTab=[...document.querySelectorAll('.tab')].findIndex(t=>t.classList.contains('on'));
   renderPortfolio();renderIndex();renderRec();renderSummary();
-  if(activeTab===3) renderSim();
-  const ids=['portfolio','index','rec','sim','summary'];
+  const ids=['portfolio','index','rec','summary'];
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id==='p-'+ids[Math.max(0,activeTab)]));
 }
 
