@@ -772,7 +772,7 @@ ageSelect.addEventListener('change', (e) => {
     spWeight.value = rec.sp;
     nasWeight.value = rec.nas;
     ageRecommendation.textContent = rec.text;
-    calculate();
+    saveAndCalculate();
   }
 });
 
@@ -782,20 +782,62 @@ resetBtn.addEventListener('click', () => {
   nasWeight.value = 30;
   ageSelect.value = '40s';
   ageRecommendation.textContent = '40대: 균형형 | 위험 관리';
-  calculate();
+  saveAndCalculate();
 });
 
-dowWeight.addEventListener('input', calculate);
-spWeight.addEventListener('input', calculate);
-nasWeight.addEventListener('input', calculate);
-inflation.addEventListener('input', () => { if (inflationToggle.checked) calculate(); });
-inflationToggle.addEventListener('change', calculate);
-initial.addEventListener('input', calculate);
-annual.addEventListener('input', calculate);
-period.addEventListener('input', calculate);
-withdrawalStart.addEventListener('input', calculate);
-withdrawalAmount.addEventListener('input', calculate);
+function saveToStorage() {
+  localStorage.setItem('sim_dowWeight', dowWeight.value);
+  localStorage.setItem('sim_spWeight', spWeight.value);
+  localStorage.setItem('sim_nasWeight', nasWeight.value);
+  localStorage.setItem('sim_inflation', inflation.value);
+  localStorage.setItem('sim_inflationToggle', inflationToggle.checked);
+  localStorage.setItem('sim_initial', initial.value);
+  localStorage.setItem('sim_annual', annual.value);
+  localStorage.setItem('sim_period', period.value);
+  localStorage.setItem('sim_withdrawalStart', withdrawalStart.value);
+  localStorage.setItem('sim_withdrawalAmount', withdrawalAmount.value);
+  localStorage.setItem('sim_ageSelect', ageSelect.value);
+}
 
+function loadFromStorage() {
+  const get = (key, fallback) => {
+    const v = localStorage.getItem(key);
+    return v !== null ? v : fallback;
+  };
+  dowWeight.value = get('sim_dowWeight', 25);
+  spWeight.value = get('sim_spWeight', 45);
+  nasWeight.value = get('sim_nasWeight', 30);
+  inflation.value = get('sim_inflation', 3);
+  inflationToggle.checked = get('sim_inflationToggle', 'true') === 'true';
+  initial.value = get('sim_initial', 40000);
+  annual.value = get('sim_annual', 1000);
+  period.value = get('sim_period', 10);
+  withdrawalStart.value = get('sim_withdrawalStart', 0);
+  withdrawalAmount.value = get('sim_withdrawalAmount', 0);
+  const age = get('sim_ageSelect', '40s');
+  ageSelect.value = age;
+  if (age && ageRecommendations[age]) {
+    ageRecommendation.textContent = ageRecommendations[age].text;
+  }
+}
+
+function saveAndCalculate() {
+  saveToStorage();
+  calculate();
+}
+
+dowWeight.addEventListener('input', saveAndCalculate);
+spWeight.addEventListener('input', saveAndCalculate);
+nasWeight.addEventListener('input', saveAndCalculate);
+inflation.addEventListener('input', () => { if (inflationToggle.checked) saveAndCalculate(); });
+inflationToggle.addEventListener('change', saveAndCalculate);
+initial.addEventListener('input', saveAndCalculate);
+annual.addEventListener('input', saveAndCalculate);
+period.addEventListener('input', saveAndCalculate);
+withdrawalStart.addEventListener('input', saveAndCalculate);
+withdrawalAmount.addEventListener('input', saveAndCalculate);
+
+loadFromStorage();
 calculate();
 </script>
 </body>
