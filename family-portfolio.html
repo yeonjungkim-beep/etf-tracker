@@ -970,6 +970,15 @@ function switchChartScen(s){
 }
 
 // ── 탭3: 추가투자 시뮬레이터 ────────────────
+// 입력값 상태 (탭 전환해도 유지)
+const SIM_STATE = {
+  monthly: 200000,
+  years: 20,
+  nasdaq: 30,
+  sp500: 40,
+  div: 30,
+};
+
 function renderSimulate(){
   document.getElementById('etf-simulate').innerHTML = `
   <div class="sim-card">
@@ -977,11 +986,13 @@ function renderSimulate(){
     <div class="sim-grid">
       <div class="sim-inp-grp">
         <label class="sim-lbl">월 투자금액 (원)</label>
-        <input class="sim-inp" id="sim-monthly" type="number" value="500000" placeholder="500000">
+        <input class="sim-inp" id="sim-monthly" type="number" value="${SIM_STATE.monthly}" placeholder="200000"
+          oninput="SIM_STATE.monthly=parseInt(this.value)||0">
       </div>
       <div class="sim-inp-grp">
         <label class="sim-lbl">투자 기간 (년)</label>
-        <input class="sim-inp" id="sim-years" type="number" value="20" min="1" max="60">
+        <input class="sim-inp" id="sim-years" type="number" value="${SIM_STATE.years}" min="1" max="60"
+          oninput="SIM_STATE.years=parseInt(this.value)||10">
       </div>
     </div>
     <div style="font-size:11px;font-weight:700;color:var(--sub);margin-bottom:8px">ETF 비중 배분</div>
@@ -989,22 +1000,25 @@ function renderSimulate(){
       <div class="alloc-row">
         <div class="alloc-dot" style="background:#3b82f6"></div>
         <div class="alloc-name">나스닥100</div>
-        <input class="alloc-inp" id="alloc-nasdaq" type="number" value="30" min="0" max="100" oninput="syncAlloc()">
+        <input class="alloc-inp" id="alloc-nasdaq" type="number" value="${SIM_STATE.nasdaq}" min="0" max="100"
+          oninput="SIM_STATE.nasdaq=parseInt(this.value)||0;syncAlloc()">
         <div class="alloc-pct">%</div>
       </div>
       <div class="alloc-row">
         <div class="alloc-dot" style="background:#10b981"></div>
         <div class="alloc-name">S&P500</div>
-        <input class="alloc-inp" id="alloc-sp500" type="number" value="40" min="0" max="100" oninput="syncAlloc()">
+        <input class="alloc-inp" id="alloc-sp500" type="number" value="${SIM_STATE.sp500}" min="0" max="100"
+          oninput="SIM_STATE.sp500=parseInt(this.value)||0;syncAlloc()">
         <div class="alloc-pct">%</div>
       </div>
       <div class="alloc-row">
         <div class="alloc-dot" style="background:#f59e0b"></div>
         <div class="alloc-name">배당다우존스</div>
-        <input class="alloc-inp" id="alloc-div" type="number" value="30" min="0" max="100" oninput="syncAlloc()">
+        <input class="alloc-inp" id="alloc-div" type="number" value="${SIM_STATE.div}" min="0" max="100"
+          oninput="SIM_STATE.div=parseInt(this.value)||0;syncAlloc()">
         <div class="alloc-pct">%</div>
       </div>
-      <div style="font-size:10px;color:var(--muted);text-align:right" id="alloc-sum-txt">합계: 100%</div>
+      <div style="font-size:10px;color:var(--muted);text-align:right" id="alloc-sum-txt">합계: ${SIM_STATE.nasdaq+SIM_STATE.sp500+SIM_STATE.div}%</div>
     </div>
     <button class="sim-run" onclick="runSimulate()">📊 시뮬레이션 실행</button>
     <div id="sim-result"></div>
@@ -1012,19 +1026,20 @@ function renderSimulate(){
 }
 
 function syncAlloc(){
-  const sum=['nasdaq','sp500','div'].reduce((s,k)=>s+(parseInt(document.getElementById('alloc-'+k).value)||0),0);
+  const sum = SIM_STATE.nasdaq + SIM_STATE.sp500 + SIM_STATE.div;
   const el=document.getElementById('alloc-sum-txt');
+  if(!el) return;
   el.textContent=`합계: ${sum}%`;
   el.style.color=sum===100?'var(--pos)':'var(--neg)';
 }
 
 function runSimulate(){
-  const monthly=parseInt(document.getElementById('sim-monthly').value)||0;
-  const years=parseInt(document.getElementById('sim-years').value)||10;
-  const alloc={
-    nasdaq:(parseInt(document.getElementById('alloc-nasdaq').value)||0)/100,
-    sp500: (parseInt(document.getElementById('alloc-sp500').value)||0)/100,
-    div:   (parseInt(document.getElementById('alloc-div').value)||0)/100,
+  const monthly = SIM_STATE.monthly;
+  const years   = SIM_STATE.years;
+  const alloc   = {
+    nasdaq: SIM_STATE.nasdaq/100,
+    sp500:  SIM_STATE.sp500/100,
+    div:    SIM_STATE.div/100,
   };
   const sum=alloc.nasdaq+alloc.sp500+alloc.div;
   if(Math.round(sum*100)!==100){
