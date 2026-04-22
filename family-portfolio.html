@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>🏠 박씨 가족 포트폴리오</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f4f8;--border:#e2e8f0;--text:#1e293b;
+  --sub:#64748b;--muted:#94a3b8;
+  --pos:#16a34a;--neg:#ef4444;--acc:#6366f1;
+}
+body{background:var(--bg);font-family:'Noto Sans KR',sans-serif;color:var(--text);font-size:14px}
+
+/* ── 헤더 ── */
+.hd{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:99;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.hd-in{max-width:820px;margin:0 auto;padding:10px 16px}
+.hd-top{display:flex;justify-content:space-between;align-items:center}
+.hd-logo{font-size:17px;font-weight:900;letter-spacing:-.03em}
+.hd-logo span{color:var(--acc)}
+.hd-r{text-align:right}
+.hd-lbl{font-size:9px;color:var(--muted);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.hd-eval{font-size:15px;font-weight:900;color:var(--text);line-height:1.2}
+.hd-pnl{font-size:11px;font-weight:700}
+
+/* ── 업데이트 바 ── */
+.rb{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;margin-top:8px}
+.rb-idle{background:#f1f5f9;border:1.5px solid #e2e8f0}
+.rb-loading{background:#eff6ff;border:1.5px solid #bfdbfe}
+.rb-ok{background:#f0fdf4;border:1.5px solid #bbf7d0}
+.rb-err{background:#fef2f2;border:1.5px solid #fecaca}
+.rb-txt{flex:1;min-width:0}
+.rb-main{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rb-sub{font-size:9px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rb-btns{display:flex;gap:5px;flex-shrink:0}
+.btn{border:none;border-radius:8px;padding:6px 11px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-pri{background:var(--acc);color:#fff}.btn-pri:hover:not(:disabled){background:#4f46e5}
+.btn-ghost{background:#fff;border:1.5px solid var(--border);color:var(--sub)}.btn-ghost:hover{border-color:var(--acc);color:var(--acc)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;animation:spin .8s linear infinite}
+
+/* ── 설정 패널 ── */
+.setup{background:#faf5ff;border:1.5px solid #c4b5fd;border-radius:12px;padding:14px;margin-top:8px;display:none}
+.setup.open{display:block}
+.setup-title{font-size:12px;font-weight:800;color:#7c3aed;margin-bottom:8px}
+.setup-steps{font-size:11px;color:var(--sub);line-height:1.9;margin-bottom:10px}
+.setup-steps b{color:var(--text)}
+.setup-inp{width:100%;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:11px;color:var(--text);outline:none;margin-bottom:8px}
+.setup-inp:focus{border-color:#7c3aed}
+.setup-inp::placeholder{color:#cbd5e1}
+
+/* ── 탭 ── */
+.tabs{display:flex;border-top:1px solid var(--border);margin-top:8px}
+.tab{background:none;border:none;border-bottom:2.5px solid transparent;color:var(--muted);font-family:inherit;font-size:12px;font-weight:600;padding:8px 14px;cursor:pointer;white-space:nowrap}
+.tab.on{color:var(--acc);border-bottom-color:var(--acc);font-weight:800}
+
+/* ── 콘텐츠 ── */
+.content{max-width:820px;margin:0 auto;padding:16px 16px 100px}
+.page{display:none}.page.on{display:block}
+
+/* ── 패밀리 카드 ── */
+.fam-card{background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:16px;padding:18px;margin-bottom:14px;color:#fff}
+.fam-lbl{font-size:9px;font-weight:700;letter-spacing:.08em;opacity:.75;text-transform:uppercase;margin-bottom:4px}
+.fam-eval{font-size:26px;font-weight:900;letter-spacing:-.03em;line-height:1}
+.fam-pnl{font-size:13px;font-weight:700;margin-top:4px;opacity:.9}
+.fam-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.fam-col{background:rgba(255,255,255,.15);border-radius:12px;padding:12px}
+.fam-col-lbl{font-size:9px;opacity:.7;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.fam-col-name{font-size:12px;font-weight:800;margin-bottom:4px}
+.fam-col-eval{font-size:16px;font-weight:900;line-height:1.1}
+.fam-col-pnl{font-size:10px;opacity:.85;margin-top:3px}
+
+/* ── 개인 헤더 ── */
+.person-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:14px 16px;border-radius:16px;border:1.5px solid}
+.person-hdr.sy{background:#f5f3ff;border-color:#c4b5fd}
+.person-hdr.tm{background:#fffbeb;border-color:#fde68a}
+.avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;flex-shrink:0}
+.avatar.sy{background:#ede9fe;color:#6366f1}
+.avatar.tm{background:#fef3c7;color:#f59e0b}
+.person-info{flex:1}
+.person-name{font-size:16px;font-weight:900}
+.person-sub{font-size:10px;color:var(--sub);margin-top:1px}
+.person-r{text-align:right}
+.person-eval{font-size:15px;font-weight:900;color:var(--text)}
+.person-pnl{font-size:11px;font-weight:700;margin-top:2px}
+
+/* ── 계좌 카드 ── */
+.ac{background:#fff;border:1.5px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.ac-hdr{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid #f1f5f9}
+.badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;display:inline-block;margin-bottom:3px}
+.b-dom{background:#ede9fe;color:#7c3aed}
+.b-pen{background:#fef3c7;color:#d97706}
+.b-ovs{background:#dcfce7;color:#16a34a}
+.ac-id{font-size:10px;color:var(--muted)}
+.ac-r{text-align:right}
+.ac-eval{font-size:14px;font-weight:800;color:var(--text)}
+.ac-pnl{font-size:12px;font-weight:700;margin-top:1px}
+.ac-pct{font-size:10px;font-weight:600}
+
+/* ── 종목 행 ── */
+.slist{padding:0}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #f8fafc;gap:10px}
+.srow:last-child{border-bottom:none}
+.srow:hover{background:#fafbfc}
+
+/* 왼쪽: 종목명 블록 */
+.s-l{flex:1;min-width:0}
+.s-name{font-size:13px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-meta{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:nowrap}
+.s-ticker{font-size:10px;color:var(--muted)}
+.s-sep{font-size:10px;color:#cbd5e1}
+.s-avg-txt{font-size:10px;color:var(--muted);white-space:nowrap}
+
+/* 가운데: 수량 */
+.s-qty-wrap{display:flex;align-items:center;gap:3px;flex-shrink:0}
+.s-qty-lbl{font-size:10px;color:var(--muted)}
+.qty-inp{width:46px;text-align:center;border:1.5px solid var(--border);border-radius:7px;padding:4px 3px;font-family:inherit;font-size:12px;font-weight:700;color:var(--text);background:#fff;outline:none}
+.qty-inp:focus{border-color:var(--acc);box-shadow:0 0 0 2px rgba(99,102,241,.12)}
+
+/* 오른쪽: 현재가·평가금액·손익 */
+.s-r{text-align:right;flex-shrink:0;min-width:100px}
+.s-cur{font-size:10px;color:var(--muted);margin-bottom:2px}
+.s-cur.live{color:#0284c7;font-weight:600}
+.s-eval{font-size:15px;font-weight:900;color:var(--text);line-height:1.2}
+.s-pnl{font-size:11px;font-weight:700;margin-top:2px}
+.s-pct{font-size:10px;font-weight:600}
+.pos{color:var(--pos)}.neg{color:var(--neg)}
+
+/* ── ETF 서브탭 ── */
+.etf-subtabs{display:flex;gap:0;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:4px;margin-bottom:12px;overflow-x:auto}
+.etf-stab{flex:1;background:none;border:none;border-radius:8px;color:var(--muted);font-family:inherit;font-size:11px;font-weight:600;padding:7px 6px;cursor:pointer;white-space:nowrap;text-align:center}
+.etf-stab.on{background:var(--acc);color:#fff;font-weight:800}
+.etf-tab{display:none}.etf-tab.on{display:block}
+
+/* ETF 히어로 카드 */
+.etf-hero{border-radius:14px;padding:16px;margin-bottom:10px;color:#fff}
+.etf-hero.nasdaq{background:linear-gradient(135deg,#1d4ed8,#3b82f6)}
+.etf-hero.sp500{background:linear-gradient(135deg,#065f46,#10b981)}
+.etf-hero.div{background:linear-gradient(135deg,#92400e,#f59e0b)}
+.etf-name{font-size:10px;font-weight:700;opacity:.8;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+.etf-fullname{font-size:15px;font-weight:900;margin-bottom:10px;line-height:1.3}
+.etf-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.etf-stat{background:rgba(255,255,255,.18);border-radius:9px;padding:9px}
+.etf-stat-lbl{font-size:9px;opacity:.75;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px}
+.etf-stat-val{font-size:15px;font-weight:900;line-height:1.1}
+.etf-stat-sub{font-size:9px;opacity:.75;margin-top:2px}
+
+/* 비중 카드 */
+.weight-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.wl-item{padding:9px 0;border-bottom:1px solid #f8fafc}
+.wl-item:last-child{border-bottom:none}
+.wl-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.wl-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.wl-name{font-size:13px;font-weight:800;color:var(--text);flex:1}
+.wl-pct{font-size:13px;font-weight:900;min-width:44px;text-align:right}
+.wl-eval{font-size:12px;font-weight:700;color:var(--sub);min-width:80px;text-align:right}
+.wl-bar-bg{height:7px;background:#f1f5f9;border-radius:99px;overflow:hidden}
+.wl-bar{height:100%;border-radius:99px;transition:width .5s ease}
+
+/* 시나리오 뱃지 */
+.scen-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.scen{border-radius:11px;padding:11px;text-align:center}
+.scen.bear{background:#fef2f2;border:1.5px solid #fecaca}
+.scen.base{background:#f0fdf4;border:1.5px solid #bbf7d0}
+.scen.bull{background:#eff6ff;border:1.5px solid #bfdbfe}
+.scen-lbl{font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:3px;color:var(--muted)}
+.scen-pct{font-size:17px;font-weight:900;line-height:1}
+.scen.bear .scen-pct{color:var(--neg)}
+.scen.base .scen-pct{color:var(--pos)}
+.scen.bull .scen-pct{color:#2563eb}
+.scen-desc{font-size:9px;color:var(--muted);margin-top:2px}
+
+/* 전망 테이블 */
+.ftbl{width:100%;border-collapse:collapse;font-size:11px}
+.ftbl th{background:#f8fafc;padding:6px 7px;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);text-align:center}
+.ftbl th:first-child{text-align:left}
+.ftbl td{padding:7px 7px;border-bottom:1px solid #f8fafc;text-align:center;font-size:11px;vertical-align:middle}
+.ftbl td:first-child{font-weight:700;color:var(--sub);text-align:left;white-space:nowrap}
+.ftbl tr:last-child td{border-bottom:none}
+.ftbl .sep th{background:#e2e8f0;font-size:10px;color:var(--sub);text-align:center;padding:4px}
+
+/* 시뮬레이터 */
+.sim-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.sim-title{font-size:13px;font-weight:800;margin-bottom:12px}
+.sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.sim-inp-grp{display:flex;flex-direction:column;gap:4px}
+.sim-lbl{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.sim-inp{border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:13px;font-weight:700;color:var(--text);background:#fff;outline:none;width:100%}
+.sim-inp:focus{border-color:var(--acc)}
+.sim-alloc{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.alloc-row{display:flex;align-items:center;gap:8px}
+.alloc-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.alloc-name{font-size:12px;font-weight:700;flex:1}
+.alloc-inp{width:60px;text-align:center;border:1.5px solid var(--border);border-radius:7px;padding:5px 4px;font-family:inherit;font-size:12px;font-weight:700;color:var(--text);outline:none}
+.alloc-inp:focus{border-color:var(--acc)}
+.alloc-pct{font-size:11px;color:var(--muted);width:24px}
+.sim-run{width:100%;background:var(--acc);border:none;border-radius:10px;padding:11px;color:#fff;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;margin-bottom:12px}
+.sim-run:hover{background:#4f46e5}
+.sim-result{background:#f8fafc;border-radius:10px;padding:12px;margin-bottom:10px}
+.sim-res-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sim-res-item{background:#fff;border-radius:9px;padding:10px}
+.sim-res-lbl{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.sim-res-val{font-size:16px;font-weight:900;color:var(--text);line-height:1.1}
+.sim-res-sub{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* 추천비중 */
+.age-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.age-btn{background:#f1f5f9;border:1.5px solid var(--border);border-radius:99px;padding:5px 13px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;color:var(--sub)}
+.age-btn.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:800}
+.rec-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.rec-bar{display:flex;height:20px;border-radius:8px;overflow:hidden;gap:2px;margin:10px 0}
+.rec-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
+.rec-items{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.rec-item{display:flex;align-items:center;gap:8px}
+.rec-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.rec-name{font-size:12px;font-weight:700;flex:1}
+.rec-pct-bar{flex:2;background:#f1f5f9;border-radius:99px;height:7px;overflow:hidden}
+.rec-pct-fill{height:100%;border-radius:99px}
+.rec-pct-val{font-size:12px;font-weight:800;min-width:36px;text-align:right}
+.rec-reason{font-size:10px;color:var(--muted);line-height:1.7;margin-top:10px;padding:10px;background:#f8fafc;border-radius:9px}
+
+.notice-box{background:#f8fafc;border-radius:10px;padding:10px 12px;font-size:10px;color:var(--muted);line-height:1.7;margin-top:8px}
+
+/* 공통 */
+.sec-lbl{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 8px}
+.cmp-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px}
+.cmp-row{display:grid;grid-template-columns:90px 1fr 1fr;border-bottom:1px solid #f1f5f9}
+.cmp-row:last-child{border-bottom:none}
+.cmp-row.hdr{background:#f8fafc}
+.cmp-row.tot{background:#f8fafc}
+.cmp-cell{padding:10px 12px}
+.cmp-cell+.cmp-cell{border-left:1px solid #f1f5f9}
+.cmp-hdr-txt{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.cmp-label{font-size:11px;font-weight:700;color:var(--sub);line-height:1.4}
+.cmp-eval{font-size:13px;font-weight:900;color:var(--text);margin-bottom:2px}
+.cmp-pnl{font-size:11px;font-weight:700}
+.cmp-pct{font-size:10px;font-weight:600}
+.pos{color:var(--pos)}.neg{color:var(--neg)}
+</style>
+</head>
+<body>
+
+<div class="hd"><div class="hd-in">
+  <div class="hd-top">
+    <div>
+      <div class="hd-logo">🏠 박씨 <span>패밀리</span></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:1px">가족 통합 포트폴리오</div>
+    </div>
+    <div class="hd-r">
+      <div class="hd-lbl">가족 총 평가금액</div>
+      <div class="hd-eval" id="hd-eval">—</div>
+      <div class="hd-pnl" id="hd-pnl"></div>
+    </div>
+  </div>
+
+  <div class="rb rb-idle" id="rb">
+    <div class="rb-txt">
+      <div class="rb-main" id="rb-main">📸 이미지 기준 현재가로 표시 중</div>
+      <div class="rb-sub" id="rb-sub">실시간 업데이트: ⚙️ 설정 후 버튼 클릭</div>
+    </div>
+    <div class="rb-btns">
+      <button class="btn btn-ghost" onclick="toggleSetup()">⚙️ 설정</button>
+      <button class="btn btn-ghost" onclick="resetQty()">↺ 초기화</button>
+      <button class="btn btn-pri" id="rb-btn" onclick="fetchPrices()">🔄 현재가 업데이트</button>
+    </div>
+  </div>
+
+  <div class="setup" id="setup-panel">
+    <div class="setup-title">⚙️ Google Apps Script 연결 설정</div>
+    <div class="setup-steps">
+      1. <b>Google Sheets</b> 새 파일 생성<br>
+      2. <b>확장 프로그램 &gt; Apps Script</b> 열기<br>
+      3. <b>Code.gs</b> 코드 전체 붙여넣기 후 저장<br>
+      4. <b>배포 &gt; 새 배포</b> → 유형: 웹앱<br>
+      &nbsp;&nbsp;실행: 나(본인) / 액세스: <b>모든 사용자(익명 포함)</b><br>
+      5. 배포된 <b>웹앱 URL</b>을 아래에 붙여넣기<br>
+      6. Apps Script 편집기에서 <b>setupTrigger()</b> 1회 실행
+    </div>
+    <input class="setup-inp" id="gas-url" type="text" placeholder="https://script.google.com/macros/s/.../exec"/>
+    <button class="btn btn-pri" onclick="saveUrl()">저장</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" onclick="showPage('overview',this)">📊 전체요약</button>
+    <button class="tab" onclick="showPage('sooyul',this)">👩 소율</button>
+    <button class="tab" onclick="showPage('taemin',this)">👨 태민</button>
+    <button class="tab" onclick="showPage('etf',this)">📈 ETF분석</button>
+  </div>
+</div></div>
+
+<div class="content">
+
+<!-- 전체요약 -->
+<div class="page on" id="page-overview">
+  <div class="fam-card">
+    <div class="fam-lbl">가족 합산 총 평가금액</div>
+    <div class="fam-eval" id="ov-fam-eval">—</div>
+    <div class="fam-pnl" id="ov-fam-pnl">—</div>
+    <div class="fam-cols">
+      <div class="fam-col">
+        <div class="fam-col-lbl">👩 소율</div>
+        <div class="fam-col-name">박소율</div>
+        <div class="fam-col-eval" id="ov-sy-eval">—</div>
+        <div class="fam-col-pnl" id="ov-sy-pnl">—</div>
+      </div>
+      <div class="fam-col">
+        <div class="fam-col-lbl">👨 태민</div>
+        <div class="fam-col-name">박태민</div>
+        <div class="fam-col-eval" id="ov-tm-eval">—</div>
+        <div class="fam-col-pnl" id="ov-tm-pnl">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="sec-lbl">계좌별 요약</div>
+  <div class="cmp-card">
+    <div class="cmp-row hdr">
+      <div class="cmp-cell"><span class="cmp-hdr-txt">계좌</span></div>
+      <div class="cmp-cell"><span class="cmp-hdr-txt">👩 소율</span></div>
+      <div class="cmp-cell"><span class="cmp-hdr-txt">👨 태민</span></div>
+    </div>
+    <div id="ov-tbl"></div>
+  </div>
+</div>
+
+<!-- 소율 -->
+<div class="page" id="page-sooyul">
+  <div class="person-hdr sy">
+    <div class="avatar sy">소</div>
+    <div class="person-info">
+      <div class="person-name">박소율</div>
+      <div class="person-sub">종합 · 해외주식 · 연금저축</div>
+    </div>
+    <div class="person-r">
+      <div class="person-eval" id="sy-eval">—</div>
+      <div class="person-pnl" id="sy-pnl">—</div>
+    </div>
+  </div>
+  <div id="sy-cards"></div>
+</div>
+
+<!-- 태민 -->
+<div class="page" id="page-taemin">
+  <div class="person-hdr tm">
+    <div class="avatar tm">태</div>
+    <div class="person-info">
+      <div class="person-name">박태민</div>
+      <div class="person-sub">종합 · 해외주식 · 연금저축</div>
+    </div>
+    <div class="person-r">
+      <div class="person-eval" id="tm-eval">—</div>
+      <div class="person-pnl" id="tm-pnl">—</div>
+    </div>
+  </div>
+  <div id="tm-cards"></div>
+</div>
+
+<!-- ETF 분석 -->
+<div class="page" id="page-etf">
+  <div class="etf-subtabs">
+    <button class="etf-stab on" onclick="showEtfTab('holdings',this)">📊 비중현황</button>
+    <button class="etf-stab" onclick="showEtfTab('forecast',this)">📈 수익전망</button>
+    <button class="etf-stab" onclick="showEtfTab('simulate',this)">💰 추가투자</button>
+    <button class="etf-stab" onclick="showEtfTab('recommend',this)">🎯 추천비중</button>
+  </div>
+  <div id="etf-holdings" class="etf-tab on"></div>
+  <div id="etf-forecast" class="etf-tab"></div>
+  <div id="etf-simulate" class="etf-tab"></div>
+  <div id="etf-recommend" class="etf-tab"></div>
+</div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// 포트폴리오 원본 데이터
+// ═══════════════════════════════════════════
+const PORTFOLIO = {
+  sooyul: {
+    domestic:{ label:'국내 종합', badge:'b-dom', accountId:'7083658088-01', stocks:[
+      {id:'sy_d1', name:'한솔테크닉스',        ticker:'096760', type:'KR', qty:17,  avgPrice:9114},
+      {id:'sy_d2', name:'NAVER',               ticker:'035420', type:'KR', qty:20,  avgPrice:241588},
+      {id:'sy_d3', name:'TIGER 미국나스닥100',  ticker:'133690', type:'KR', qty:10,  avgPrice:158204},
+      {id:'sy_d4', name:'TIGER 미국S&P500',    ticker:'360750', type:'KR', qty:65,  avgPrice:23818},
+      {id:'sy_d5', name:'TIGER 미국배당다우존스',ticker:'458730', type:'KR', qty:139, avgPrice:12462},
+    ]},
+    overseas:{ label:'해외주식', badge:'b-ovs', accountId:'7083658088-01', stocks:[
+      {id:'sy_o1', name:'KOMP',          ticker:'KOMP',  type:'US', qty:4,  avgPrice:53.165},
+      {id:'sy_o2', name:'AT&T',          ticker:'T',     type:'US', qty:6,  avgPrice:28.3817},
+      {id:'sy_o3', name:'애플',          ticker:'AAPL',  type:'US', qty:28, avgPrice:210.4602},
+      {id:'sy_o4', name:'퍼스트 솔라',   ticker:'FSLR',  type:'US', qty:4,  avgPrice:214.155},
+      {id:'sy_o5', name:'알파벳',        ticker:'GOOGL', type:'US', qty:17, avgPrice:85.2},
+      {id:'sy_o6', name:'마이크로소프트', ticker:'MSFT',  type:'US', qty:1,  avgPrice:164.59},
+      {id:'sy_o7', name:'슈뢰딩거',      ticker:'SDGR',  type:'US', qty:4,  avgPrice:58.47},
+      {id:'sy_o8', name:'테슬라',        ticker:'TSLA',  type:'US', qty:23, avgPrice:209.7561},
+      {id:'sy_o9', name:'워너브로스',    ticker:'WBD',   type:'US', qty:1,  avgPrice:24.075},
+    ]},
+    pension:{ label:'연금저축', badge:'b-pen', accountId:'7083658088-15', stocks:[
+      {id:'sy_p1', name:'TIGER 미국S&P500',       ticker:'360750', type:'KR', qty:11, avgPrice:25036},
+      {id:'sy_p2', name:'KODEX 미국나스닥100',     ticker:'379800', type:'KR', qty:7,  avgPrice:25174},
+      {id:'sy_p3', name:'TIGER 미국배당다우존스',  ticker:'458730', type:'KR', qty:10, avgPrice:14476},
+    ]},
+  },
+  taemin: {
+    domestic:{ label:'국내 종합', badge:'b-dom', accountId:'7083658839-01', stocks:[
+      {id:'tm_d1', name:'한솔테크닉스',          ticker:'096760', type:'KR', qty:12,  avgPrice:8188},
+      {id:'tm_d2', name:'SK',                    ticker:'034730', type:'KR', qty:1,   avgPrice:278000},
+      {id:'tm_d3', name:'NAVER',                 ticker:'035420', type:'KR', qty:2,   avgPrice:316295},
+      {id:'tm_d4', name:'TIGER 미국나스닥100',    ticker:'133690', type:'KR', qty:13,  avgPrice:155969},
+      {id:'tm_d5', name:'TIGER 미국S&P500',      ticker:'360750', type:'KR', qty:93,  avgPrice:23636},
+      {id:'tm_d6', name:'KODEX 미국나스닥100',    ticker:'379800', type:'KR', qty:1,   avgPrice:24268},
+      {id:'tm_d7', name:'TIGER 미국배당다우존스', ticker:'458730', type:'KR', qty:374, avgPrice:12289},
+    ]},
+    overseas:{ label:'해외주식', badge:'b-ovs', accountId:'7083658839-01', stocks:[
+      {id:'tm_o1',  name:'버크셔 해서웨이B', ticker:'BRK-B', type:'US', qty:1,  avgPrice:269.825},
+      {id:'tm_o2',  name:'월트 디즈니',      ticker:'DIS',   type:'US', qty:2,  avgPrice:141.69},
+      {id:'tm_o3',  name:'KOMP',             ticker:'KOMP',  type:'US', qty:2,  avgPrice:65.0},
+      {id:'tm_o4',  name:'AT&T',             ticker:'T',     type:'US', qty:5,  avgPrice:28.86},
+      {id:'tm_o5',  name:'애플',             ticker:'AAPL',  type:'US', qty:26, avgPrice:210.395},
+      {id:'tm_o6',  name:'퍼스트 솔라',      ticker:'FSLR',  type:'US', qty:4,  avgPrice:214.54},
+      {id:'tm_o7',  name:'알파벳',           ticker:'GOOGL', type:'US', qty:17, avgPrice:85.2},
+      {id:'tm_o8',  name:'마이크로소프트',   ticker:'MSFT',  type:'US', qty:1,  avgPrice:164.49},
+      {id:'tm_o9',  name:'스타벅스',         ticker:'SBUX',  type:'US', qty:2,  avgPrice:93.9},
+      {id:'tm_o10', name:'슈뢰딩거',         ticker:'SDGR',  type:'US', qty:2,  avgPrice:76.935},
+      {id:'tm_o11', name:'테슬라',           ticker:'TSLA',  type:'US', qty:21, avgPrice:208.7186},
+      {id:'tm_o12', name:'워너브로스',       ticker:'WBD',   type:'US', qty:1,  avgPrice:24.075},
+    ]},
+    pension:{ label:'연금저축', badge:'b-pen', accountId:'7083658839-15', stocks:[
+      {id:'tm_p1', name:'TIGER 미국S&P500',       ticker:'360750', type:'KR', qty:11, avgPrice:24920},
+      {id:'tm_p2', name:'KODEX 미국나스닥100',     ticker:'379800', type:'KR', qty:7,  avgPrice:25234},
+      {id:'tm_p3', name:'TIGER 미국배당다우존스',  ticker:'458730', type:'KR', qty:9,  avgPrice:14447},
+    ]},
+  }
+};
+
+// ═══════════════════════════════════════════
+// 현재가 기본값 (이미지 기준)
+// KR=원, US=USD
+// ═══════════════════════════════════════════
+let prices = {
+  '096760':7330, '035420':213750, '034730':379500,
+  '133690':174485, '360750':26055, '379800':26145, '458730':14585,
+  'KOMP':66.02, 'T':25.98, 'AAPL':267.59, 'FSLR':188.19,
+  'GOOGL':334.50, 'MSFT':426.77, 'SDGR':13.00, 'TSLA':389.50,
+  'WBD':27.31, 'BRK-B':470.00, 'DIS':104.75, 'SBUX':97.92,
+  'USDKRW':1471,
+};
+let usdkrw = prices['USDKRW'];
+let isLive = false; // 실시간 가격 여부
+let lastUpdated = '';
+
+// ═══════════════════════════════════════════
+// 수량 저장/불러오기
+// ═══════════════════════════════════════════
+const QTY_KEY = 'fam_qty_v2';
+const URL_KEY = 'fam_gas_url';
+
+function loadQty(){ try{ return JSON.parse(localStorage.getItem(QTY_KEY))||{}; }catch{ return {}; } }
+function saveQty(m){ localStorage.setItem(QTY_KEY, JSON.stringify(m)); }
+function getQty(id, def){ const q=loadQty(); return q[id]!==undefined ? q[id] : def; }
+
+function onQtyChange(id, val){
+  const n = parseInt(val);
+  if(isNaN(n)||n<0) return;
+  const q = loadQty(); q[id]=n; saveQty(q);
+  recalcRender();
+}
+function resetQty(){
+  if(!confirm('저장된 수량을 기본값으로 초기화할까요?')) return;
+  localStorage.removeItem(QTY_KEY);
+  recalcRender();
+}
+
+// ═══════════════════════════════════════════
+// 계산
+// ═══════════════════════════════════════════
+function calcStock(s){
+  const qty = getQty(s.id, s.qty);
+  const cur  = prices[s.ticker] ?? null;
+  let evalKRW, costKRW, curKRW;
+  if(s.type==='KR'){
+    curKRW  = cur;
+    evalKRW = (cur ?? s.avgPrice) * qty;
+    costKRW = s.avgPrice * qty;
+  } else {
+    curKRW  = cur != null ? cur * usdkrw : null;
+    evalKRW = (cur ?? s.avgPrice) * qty * usdkrw;
+    costKRW = s.avgPrice * qty * usdkrw;
+  }
+  const pnl    = evalKRW - costKRW;
+  const pnlPct = costKRW>0 ? pnl/costKRW*100 : 0;
+  return { ...s, qty, cur, curKRW, evalKRW, costKRW, pnl, pnlPct, hasLive: cur!=null };
+}
+
+function calcGroup(gd){
+  let tEval=0, tCost=0;
+  const items = gd.stocks.map(s=>{ const c=calcStock(s); tEval+=c.evalKRW; tCost+=c.costKRW; return c; });
+  const tPnl=tEval-tCost, tPct=tCost>0?tPnl/tCost*100:0;
+  return { ...gd, items, tEval, tPnl, tPct };
+}
+
+function calcPerson(pd){
+  const groups={};
+  let tEval=0, tPnl=0;
+  for(const [k,v] of Object.entries(pd)){
+    groups[k]=calcGroup(v);
+    tEval+=groups[k].tEval; tPnl+=groups[k].tPnl;
+  }
+  return { groups, tEval, tPnl };
+}
+
+// ═══════════════════════════════════════════
+// 렌더 유틸
+// ═══════════════════════════════════════════
+const K   = n => Math.round(n).toLocaleString('ko-KR');
+const W   = n => K(n)+'원';
+const P   = n => (n>=0?'+':'')+K(n)+'원';
+const Pp  = n => (n>=0?'+':'')+n.toFixed(2)+'%';
+const cls = n => n>=0?'pos':'neg';
+const GRP = ['domestic','overseas','pension'];
+
+// ═══════════════════════════════════════════
+// 종목 행 렌더
+// ═══════════════════════════════════════════
+function renderRow(s){
+  const avgStr = s.type==='US' ? `$${s.avgPrice.toFixed(2)}` : K(s.avgPrice)+'원';
+  const curStr = s.hasLive
+    ? (s.type==='US' ? `$${s.cur.toFixed(2)}` : K(s.cur)+'원')
+    : (s.type==='US' ? `$${s.avgPrice.toFixed(2)}` : K(s.avgPrice)+'원');
+  const liveClass = isLive && s.hasLive ? 'live' : '';
+  return `
+<div class="srow">
+  <div class="s-l">
+    <div class="s-name">${s.name}</div>
+    <div class="s-meta">
+      <span class="s-ticker">${s.ticker}</span>
+      <span class="s-sep">·</span>
+      <span class="s-avg-txt">매수 ${avgStr}</span>
+    </div>
+  </div>
+  <div class="s-qty-wrap">
+    <input class="qty-inp" type="number" min="0" value="${s.qty}"
+      onchange="onQtyChange('${s.id}',this.value)">
+    <span class="s-qty-lbl">주</span>
+  </div>
+  <div class="s-r">
+    <div class="s-cur ${liveClass}">${curStr}</div>
+    <div class="s-eval">${W(s.evalKRW)}</div>
+    <div>
+      <span class="s-pnl ${cls(s.pnl)}">${P(s.pnl)}</span>
+      <span class="s-pct ${cls(s.pnlPct)}"> ${Pp(s.pnlPct)}</span>
+    </div>
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════
+// 계좌 카드 렌더
+// ═══════════════════════════════════════════
+function renderCard(gk, gd){
+  return `
+<div class="ac">
+  <div class="ac-hdr">
+    <div>
+      <span class="badge ${gd.badge}">${gd.label}</span>
+      <div class="ac-id">${gd.accountId}</div>
+    </div>
+    <div class="ac-r">
+      <div class="ac-eval">${W(gd.tEval)}</div>
+      <div class="ac-pnl ${cls(gd.tPnl)}">${P(gd.tPnl)}</div>
+      <div class="ac-pct ${cls(gd.tPct)}">${Pp(gd.tPct)}</div>
+    </div>
+  </div>
+  <div class="slist">${gd.items.map(renderRow).join('')}</div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════
+// 전체 렌더
+// ═══════════════════════════════════════════
+function recalcRender(){
+  const sy = calcPerson(PORTFOLIO.sooyul);
+  const tm = calcPerson(PORTFOLIO.taemin);
+  const famEval = sy.tEval + tm.tEval;
+  const famPnl  = sy.tPnl  + tm.tPnl;
+
+  // 헤더
+  setText('hd-eval', W(famEval));
+  setEl('hd-pnl', P(famPnl), cls(famPnl));
+
+  // 전체요약 카드
+  setText('ov-fam-eval', W(famEval));
+  setText('ov-fam-pnl',  P(famPnl));
+  setText('ov-sy-eval',  W(sy.tEval));
+  setText('ov-sy-pnl',   P(sy.tPnl));
+  setText('ov-tm-eval',  W(tm.tEval));
+  setText('ov-tm-pnl',   P(tm.tPnl));
+
+  // 요약 테이블
+  const G_LABEL = {domestic:'🏦 국내 종합', overseas:'🌍 해외주식', pension:'📌 연금저축'};
+  let tblHtml = GRP.map(gk => {
+    const sg=sy.groups[gk], tg=tm.groups[gk];
+    return `<div class="cmp-row">
+      <div class="cmp-cell"><span class="cmp-label">${G_LABEL[gk]}</span></div>
+      <div class="cmp-cell">
+        <div class="cmp-eval">${W(sg.tEval)}</div>
+        <div class="cmp-pnl ${cls(sg.tPnl)}">${P(sg.tPnl)}</div>
+        <div class="cmp-pct ${cls(sg.tPct)}">${Pp(sg.tPct)}</div>
+      </div>
+      <div class="cmp-cell">
+        <div class="cmp-eval">${W(tg.tEval)}</div>
+        <div class="cmp-pnl ${cls(tg.tPnl)}">${P(tg.tPnl)}</div>
+        <div class="cmp-pct ${cls(tg.tPct)}">${Pp(tg.tPct)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  tblHtml += `<div class="cmp-row tot">
+    <div class="cmp-cell"><span class="cmp-label" style="font-weight:900;color:var(--text)">합계</span></div>
+    <div class="cmp-cell">
+      <div class="cmp-eval">${W(sy.tEval)}</div>
+      <div class="cmp-pnl ${cls(sy.tPnl)}">${P(sy.tPnl)}</div>
+    </div>
+    <div class="cmp-cell">
+      <div class="cmp-eval">${W(tm.tEval)}</div>
+      <div class="cmp-pnl ${cls(tm.tPnl)}">${P(tm.tPnl)}</div>
+    </div>
+  </div>`;
+  document.getElementById('ov-tbl').innerHTML = tblHtml;
+
+  // 소율 탭
+  setText('sy-eval', W(sy.tEval));
+  setEl('sy-pnl', P(sy.tPnl), cls(sy.tPnl));
+  document.getElementById('sy-cards').innerHTML = GRP.map(gk=>renderCard(gk,sy.groups[gk])).join('');
+
+  // 태민 탭
+  setText('tm-eval', W(tm.tEval));
+  setEl('tm-pnl', P(tm.tPnl), cls(tm.tPnl));
+  document.getElementById('tm-cards').innerHTML = GRP.map(gk=>renderCard(gk,tm.groups[gk])).join('');
+}
+
+function setText(id, v){ document.getElementById(id).textContent = v; }
+function setEl(id, v, c){ const el=document.getElementById(id); el.textContent=v; el.className=el.className.replace(/pos|neg/g,'').trim()+' '+c; }
+
+// ═══════════════════════════════════════════
+// ETF 메타데이터
+// ═══════════════════════════════════════════
+const ETF_META = {
+  nasdaq:{ label:'나스닥100', fullname:'TIGER/KODEX 미국나스닥100', heroClass:'nasdaq',
+    color:'#3b82f6', tickers:['133690','379800'],
+    desc:'AI·반도체 중심 기술주 100개. 변동성 높고 장기 성장 기대.',
+    hist10y:18.2, hist5y:16.4, div:0.6, bear:-30, base:12, bull:25,
+    bearDesc:'경기침체·금리인상', baseDesc:'연평균 기대', bullDesc:'AI 슈퍼사이클', risk:'높음', rebal:'분기' },
+  sp500:{ label:'S&P500', fullname:'TIGER 미국S&P500', heroClass:'sp500',
+    color:'#10b981', tickers:['360750'],
+    desc:'미국 대형주 500개. 가장 분산된 미국주식 벤치마크.',
+    hist10y:12.8, hist5y:12.1, div:1.3, bear:-20, base:10, bull:20,
+    bearDesc:'경기침체', baseDesc:'연평균 기대', bullDesc:'경제성장 지속', risk:'중간', rebal:'분기' },
+  div:{ label:'배당다우존스', fullname:'TIGER 미국배당다우존스', heroClass:'div',
+    color:'#f59e0b', tickers:['458730'],
+    desc:'배당 성장 우량주 100개. 월배당+안정성 추구.',
+    hist10y:10.1, hist5y:9.8, div:3.5, bear:-12, base:8, bull:15,
+    bearDesc:'금리하락 수혜', baseDesc:'배당+성장합산', bullDesc:'경기회복+배당성장', risk:'낮음', rebal:'연간' },
+};
+const ETF_KEYS   = ['nasdaq','sp500','div'];
+const ETF_COLORS = {nasdaq:'#3b82f6', sp500:'#10b981', div:'#f59e0b'};
+const ETF_LABELS = {nasdaq:'나스닥100', sp500:'S&P500', div:'배당다우존스'};
+const TICKER_MAP = {'133690':'nasdaq','379800':'nasdaq','360750':'sp500','458730':'div'};
+
+function getEtfByPerson(personKey){
+  const r={nasdaq:{eval:0,cost:0},sp500:{eval:0,cost:0},div:{eval:0,cost:0}};
+  for(const gd of Object.values(PORTFOLIO[personKey])){
+    for(const s of gd.stocks){
+      const ek=TICKER_MAP[s.ticker]; if(!ek) continue;
+      const qty=getQty(s.id,s.qty);
+      const cur=prices[s.ticker]??s.avgPrice;
+      r[ek].eval+=cur*qty; r[ek].cost+=s.avgPrice*qty;
+    }
+  }
+  return r;
+}
+
+// ── 탭1: 비중현황 ───────────────────────────
+function renderHoldings(){
+  const sy=getEtfByPerson('sooyul'), tm=getEtfByPerson('taemin');
+  function block(h, name){
+    const tot=ETF_KEYS.reduce((s,k)=>s+h[k].eval,0);
+    const tCost=ETF_KEYS.reduce((s,k)=>s+h[k].cost,0);
+    const tPnl=tot-tCost, tPct=tCost>0?tPnl/tCost*100:0;
+    const barSegs=ETF_KEYS.map(k=>{
+      const p=tot>0?h[k].eval/tot*100:0;
+      return `<div style="flex:${Math.max(p,1)};background:${ETF_COLORS[k]}"></div>`;
+    }).join('');
+    const items=ETF_KEYS.map(k=>{
+      const p=tot>0?h[k].eval/tot*100:0;
+      const pnl=h[k].eval-h[k].cost, pp=h[k].cost>0?pnl/h[k].cost*100:0;
+      return `<div class="wl-item">
+        <div class="wl-top">
+          <div class="wl-dot" style="background:${ETF_COLORS[k]}"></div>
+          <div class="wl-name">${ETF_LABELS[k]}</div>
+          <div class="wl-pct" style="color:${ETF_COLORS[k]}">${p.toFixed(1)}%</div>
+          <div class="wl-eval">${W(h[k].eval)}</div>
+        </div>
+        <div class="wl-bar-bg"><div class="wl-bar" style="width:${p}%;background:${ETF_COLORS[k]}"></div></div>
+        <div style="font-size:10px;font-weight:600;margin-top:3px" class="${cls(pnl)}">${P(pnl)} ${Pp(pp)}</div>
+      </div>`;
+    }).join('');
+    return `<div class="weight-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div style="font-size:15px;font-weight:900">${name}</div>
+        <div style="text-align:right">
+          <div style="font-size:15px;font-weight:900">${W(tot)}</div>
+          <div style="font-size:11px;font-weight:700;margin-top:1px" class="${cls(tPnl)}">${P(tPnl)} ${Pp(tPct)}</div>
+        </div>
+      </div>
+      <div style="display:flex;height:10px;border-radius:99px;overflow:hidden;gap:2px;margin-bottom:12px">${barSegs}</div>
+      ${items}
+    </div>`;
+  }
+  document.getElementById('etf-holdings').innerHTML =
+    block(sy,'👩 소율') + block(tm,'👨 태민') +
+    `<div class="notice-box">⚠️ 이미지 기준 현재가 사용 중. 현재가 업데이트 후 정확한 비중 반영됩니다.</div>`;
+}
+
+// ── 탭2: 수익전망 ───────────────────────────
+function renderForecast(){
+  const sy=getEtfByPerson('sooyul'), tm=getEtfByPerson('taemin');
+  function forecastCard(ek){
+    const m=ETF_META[ek];
+    const syEv=sy[ek].eval, tmEv=tm[ek].eval;
+    const syPnl=syEv-sy[ek].cost, syPct=sy[ek].cost>0?syPnl/sy[ek].cost*100:0;
+    const tmPnl=tmEv-tm[ek].cost, tmPct=tm[ek].cost>0?tmPnl/tm[ek].cost*100:0;
+    const rows=[1,3,5,10,30,60].map(yr=>{
+      function cell(ev,rate){
+        if(!ev) return `<td style="color:var(--muted)">—</td>`;
+        const v=ev*Math.pow(1+rate/100,yr);
+        const c=rate<0?'var(--neg)':rate===m.base?'var(--pos)':'#2563eb';
+        return `<td style="color:${c};font-weight:700">${W(v)}</td>`;
+      }
+      return `<tr><td><b>${yr}년</b></td>${cell(syEv,m.bear)}${cell(syEv,m.base)}${cell(syEv,m.bull)}${cell(tmEv,m.bear)}${cell(tmEv,m.base)}${cell(tmEv,m.bull)}</tr>`;
+    }).join('');
+    return `
+    <div class="etf-hero ${m.heroClass}">
+      <div class="etf-name">${m.label}</div>
+      <div class="etf-fullname">${m.fullname}</div>
+      <div class="etf-stats">
+        <div class="etf-stat"><div class="etf-stat-lbl">10년 연평균</div><div class="etf-stat-val">+${m.hist10y}%</div><div class="etf-stat-sub">과거 실적</div></div>
+        <div class="etf-stat"><div class="etf-stat-lbl">배당수익률</div><div class="etf-stat-val">${m.div}%</div><div class="etf-stat-sub">리스크 ${m.risk}</div></div>
+        <div class="etf-stat"><div class="etf-stat-lbl">리밸런싱</div><div class="etf-stat-val">${m.rebal}</div><div class="etf-stat-sub">${m.desc.split('.')[0]}</div></div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+        <div style="background:#f5f3ff;border-radius:10px;padding:10px">
+          <div style="font-size:9px;font-weight:700;color:#7c3aed;text-transform:uppercase;margin-bottom:4px">👩 소율 현재</div>
+          <div style="font-size:16px;font-weight:900">${syEv?W(syEv):'보유없음'}</div>
+          ${syEv?`<div style="font-size:11px;font-weight:700;margin-top:2px" class="${cls(syPnl)}">${P(syPnl)} ${Pp(syPct)}</div>`:''}
+        </div>
+        <div style="background:#fffbeb;border-radius:10px;padding:10px">
+          <div style="font-size:9px;font-weight:700;color:#d97706;text-transform:uppercase;margin-bottom:4px">👨 태민 현재</div>
+          <div style="font-size:16px;font-weight:900">${tmEv?W(tmEv):'보유없음'}</div>
+          ${tmEv?`<div style="font-size:11px;font-weight:700;margin-top:2px" class="${cls(tmPnl)}">${P(tmPnl)} ${Pp(tmPct)}</div>`:''}
+        </div>
+      </div>
+      <div class="scen-row">
+        <div class="scen bear"><div class="scen-lbl">하락장</div><div class="scen-pct">${m.bear}%</div><div class="scen-desc">${m.bearDesc}</div></div>
+        <div class="scen base"><div class="scen-lbl">기본 연간</div><div class="scen-pct">+${m.base}%</div><div class="scen-desc">${m.baseDesc}</div></div>
+        <div class="scen bull"><div class="scen-lbl">상승장</div><div class="scen-pct">+${m.bull}%</div><div class="scen-desc">${m.bullDesc}</div></div>
+      </div>
+      <div style="overflow-x:auto;margin-top:8px">
+        <table class="ftbl" style="min-width:320px">
+          <thead>
+            <tr><th rowspan="2">기간</th>
+              <th colspan="3" style="color:#6366f1;border-bottom:1px solid #e2e8f0">👩 소율</th>
+              <th colspan="3" style="color:#f59e0b;border-bottom:1px solid #e2e8f0">👨 태민</th>
+            </tr>
+            <tr><th>하락</th><th>기본</th><th>상승</th><th>하락</th><th>기본</th><th>상승</th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+  }
+  document.getElementById('etf-forecast').innerHTML =
+    ETF_KEYS.map(forecastCard).join('') +
+    `<div class="notice-box">⚠️ 수익 전망은 과거 실적 기반 참고용 추정치입니다. 실제 수익은 환율·세금·수수료에 따라 달라질 수 있습니다.</div>`;
+}
+
+// ── 탭3: 추가투자 시뮬레이터 ────────────────
+function renderSimulate(){
+  document.getElementById('etf-simulate').innerHTML = `
+  <div class="sim-card">
+    <div class="sim-title">💰 추가투자 시뮬레이터</div>
+    <div class="sim-grid">
+      <div class="sim-inp-grp">
+        <label class="sim-lbl">월 투자금액 (원)</label>
+        <input class="sim-inp" id="sim-monthly" type="number" value="500000" placeholder="500000">
+      </div>
+      <div class="sim-inp-grp">
+        <label class="sim-lbl">투자 기간 (년)</label>
+        <input class="sim-inp" id="sim-years" type="number" value="20" min="1" max="60">
+      </div>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--sub);margin-bottom:8px">ETF 비중 배분</div>
+    <div class="sim-alloc">
+      <div class="alloc-row">
+        <div class="alloc-dot" style="background:#3b82f6"></div>
+        <div class="alloc-name">나스닥100</div>
+        <input class="alloc-inp" id="alloc-nasdaq" type="number" value="30" min="0" max="100" oninput="syncAlloc()">
+        <div class="alloc-pct">%</div>
+      </div>
+      <div class="alloc-row">
+        <div class="alloc-dot" style="background:#10b981"></div>
+        <div class="alloc-name">S&P500</div>
+        <input class="alloc-inp" id="alloc-sp500" type="number" value="40" min="0" max="100" oninput="syncAlloc()">
+        <div class="alloc-pct">%</div>
+      </div>
+      <div class="alloc-row">
+        <div class="alloc-dot" style="background:#f59e0b"></div>
+        <div class="alloc-name">배당다우존스</div>
+        <input class="alloc-inp" id="alloc-div" type="number" value="30" min="0" max="100" oninput="syncAlloc()">
+        <div class="alloc-pct">%</div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);text-align:right" id="alloc-sum-txt">합계: 100%</div>
+    </div>
+    <button class="sim-run" onclick="runSimulate()">📊 시뮬레이션 실행</button>
+    <div id="sim-result"></div>
+  </div>`;
+}
+
+function syncAlloc(){
+  const sum=['nasdaq','sp500','div'].reduce((s,k)=>s+(parseInt(document.getElementById('alloc-'+k).value)||0),0);
+  const el=document.getElementById('alloc-sum-txt');
+  el.textContent=`합계: ${sum}%`;
+  el.style.color=sum===100?'var(--pos)':'var(--neg)';
+}
+
+function runSimulate(){
+  const monthly=parseInt(document.getElementById('sim-monthly').value)||0;
+  const years=parseInt(document.getElementById('sim-years').value)||10;
+  const alloc={
+    nasdaq:(parseInt(document.getElementById('alloc-nasdaq').value)||0)/100,
+    sp500: (parseInt(document.getElementById('alloc-sp500').value)||0)/100,
+    div:   (parseInt(document.getElementById('alloc-div').value)||0)/100,
+  };
+  const sum=alloc.nasdaq+alloc.sp500+alloc.div;
+  if(Math.round(sum*100)!==100){
+    document.getElementById('sim-result').innerHTML=
+      `<div style="color:var(--neg);font-size:12px;font-weight:700;padding:8px">⚠️ 비중 합계가 100%가 되어야 합니다 (현재 ${Math.round(sum*100)}%)</div>`;
+    return;
+  }
+  function blendedRate(sc){ return ETF_KEYS.reduce((s,k)=>s+alloc[k]*(ETF_META[k][sc]/100),0); }
+  const bearR=blendedRate('bear'), baseR=blendedRate('base'), bullR=blendedRate('bull');
+  function calcFV(mr, months){ let fv=0; for(let i=0;i<months;i++) fv=(fv+monthly)*(1+mr); return fv; }
+  const yrs=[1,3,5,10,20,30,Math.min(years,60)].filter((v,i,a)=>v<=years&&a.indexOf(v)===i);
+  if(!yrs.includes(years)) yrs.push(years);
+  yrs.sort((a,b)=>a-b);
+  const totalInvested=monthly*12*years;
+  const rows=yrs.map(yr=>{
+    const months=yr*12;
+    const bear=calcFV(Math.pow(1+bearR,1/12)-1,months);
+    const base=calcFV(Math.pow(1+baseR,1/12)-1,months);
+    const bull=calcFV(Math.pow(1+bullR,1/12)-1,months);
+    const inv=monthly*12*yr;
+    return `<tr>
+      <td><b>${yr}년</b></td>
+      <td class="neg">${W(bear)}<br><span style="font-size:9px">${Pp((bear/inv-1)*100)}</span></td>
+      <td class="pos">${W(base)}<br><span style="font-size:9px">${Pp((base/inv-1)*100)}</span></td>
+      <td style="color:#2563eb;font-weight:700">${W(bull)}<br><span style="font-size:9px">${Pp((bull/inv-1)*100)}</span></td>
+    </tr>`;
+  }).join('');
+  const finalBase=calcFV(Math.pow(1+baseR,1/12)-1,years*12);
+  document.getElementById('sim-result').innerHTML=`
+    <div class="sim-result">
+      <div style="font-size:11px;font-weight:700;color:var(--sub);margin-bottom:8px">
+        월 ${monthly.toLocaleString()}원 × ${years}년 · 혼합수익 하락${(bearR*100).toFixed(1)}% / 기본+${(baseR*100).toFixed(1)}% / 상승+${(bullR*100).toFixed(1)}%
+      </div>
+      <div class="sim-res-grid" style="margin-bottom:10px">
+        <div class="sim-res-item"><div class="sim-res-lbl">총 투자금액</div><div class="sim-res-val">${W(totalInvested)}</div><div class="sim-res-sub">${years}년간</div></div>
+        <div class="sim-res-item"><div class="sim-res-lbl">기본 시나리오 최종</div><div class="sim-res-val pos">${W(finalBase)}</div><div class="sim-res-sub">수익 ${W(finalBase-totalInvested)}</div></div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="ftbl" style="min-width:260px">
+          <thead><tr><th>기간</th><th style="color:var(--neg)">하락장</th><th style="color:var(--pos)">기본</th><th style="color:#2563eb">상승장</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+// ── 탭4: 추천비중 ───────────────────────────
+const AGE_PROFILES=[
+  {label:'20대',age:'20~29세',alloc:{nasdaq:50,sp500:30,div:20},risk:'공격형',period:'30년+',
+   reason:'투자 기간이 30~40년 이상. 하락장을 여러 번 회복할 시간이 충분합니다. 나스닥100 비중을 높여 장기 성장을 극대화하세요. 배당다우존스는 변동성 완충 역할.'},
+  {label:'30대',age:'30~39세',alloc:{nasdaq:40,sp500:35,div:25},risk:'성장형',period:'20~30년',
+   reason:'결혼·자녀·주택 등 큰 지출이 생기지만 여전히 장기 투자 가능. 나스닥 비중 유지하되 S&P500으로 분산 강화. 배당은 현금흐름 안정화.'},
+  {label:'40대',age:'40~49세',alloc:{nasdaq:30,sp500:40,div:30},risk:'균형형',period:'15~20년',
+   reason:'은퇴까지 약 15~20년. 성장과 안정의 균형점. S&P500을 중심축으로, 배당다우존스 비중을 점차 늘려 하락장 방어력을 높이세요.'},
+  {label:'50대',age:'50~59세',alloc:{nasdaq:20,sp500:35,div:45},risk:'안정형',period:'10~15년',
+   reason:'은퇴 준비 단계. 자산 보존과 현금흐름이 중요. 배당다우존스를 주력으로 월배당 수입 확보. 나스닥 비중을 줄여 변동성 리스크를 낮추세요.'},
+  {label:'60대+',age:'60세 이상',alloc:{nasdaq:10,sp500:30,div:60},risk:'보수형',period:'5~10년',
+   reason:'배당 현금흐름 최우선. 배당다우존스 월배당으로 생활비 일부 충당. S&P500으로 인플레이션 방어. 나스닥은 소량만 유지.'},
+];
+
+function renderRecommend(){
+  const btns=AGE_PROFILES.map((p,i)=>
+    `<button class="age-btn ${i===1?'on':''}" onclick="showAgeProfile(${i},this)">${p.label}</button>`
+  ).join('');
+  document.getElementById('etf-recommend').innerHTML=`
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px">🎯 나이별 추천 비중</div>
+      <div class="age-tabs">${btns}</div>
+      <div id="age-profile-content"></div>
+    </div>
+    <div class="notice-box">💡 추천 비중은 일반적인 가이드라인입니다. 개인 상황(소득·대출·위험성향 등)에 따라 조정하세요.</div>`;
+  showAgeProfile(1, document.querySelectorAll('.age-btn')[1]);
+}
+
+function showAgeProfile(idx, el){
+  document.querySelectorAll('.age-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  const p=AGE_PROFILES[idx];
+  const alloc={nasdaq:p.alloc.nasdaq, sp500:p.alloc.sp500, div:p.alloc.div};
+  const barSegs=ETF_KEYS.map(k=>`<div class="rec-seg" style="flex:${alloc[k]};background:${ETF_COLORS[k]}">${alloc[k]>=15?alloc[k]+'%':''}</div>`).join('');
+  const items=ETF_KEYS.map(k=>`<div class="rec-item">
+    <div class="rec-dot" style="background:${ETF_COLORS[k]}"></div>
+    <div class="rec-name">${ETF_LABELS[k]}</div>
+    <div class="rec-pct-bar"><div class="rec-pct-fill" style="width:${alloc[k]}%;background:${ETF_COLORS[k]}"></div></div>
+    <div class="rec-pct-val" style="color:${ETF_COLORS[k]}">${alloc[k]}%</div>
+  </div>`).join('');
+  const rC={공격형:'#ef4444',성장형:'#f59e0b',균형형:'#6366f1',안정형:'#10b981',보수형:'#64748b'};
+  document.getElementById('age-profile-content').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div><div style="font-size:16px;font-weight:900">${p.age}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">투자기간 ${p.period}</div></div>
+      <div style="background:${rC[p.risk]}20;border:1.5px solid ${rC[p.risk]}60;border-radius:99px;padding:4px 12px;font-size:11px;font-weight:800;color:${rC[p.risk]}">${p.risk}</div>
+    </div>
+    <div class="rec-bar">${barSegs}</div>
+    <div class="rec-items" style="margin-top:10px">${items}</div>
+    <div class="rec-reason">${p.reason}</div>`;
+}
+
+// ── ETF 탭 진입점 ────────────────────────────
+function renderEtfPage(){
+  renderHoldings();
+  renderForecast();
+  renderSimulate();
+  renderRecommend();
+}
+
+function showEtfTab(id, el){
+  document.querySelectorAll('.etf-tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.etf-stab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('etf-'+id).classList.add('on');
+  el.classList.add('on');
+}
+
+// ═══════════════════════════════════════════
+// 현재가 fetch
+// ═══════════════════════════════════════════
+function setBar(state, main, sub){
+  const bar=document.getElementById('rb');
+  bar.className='rb rb-'+state;
+  document.getElementById('rb-main').textContent=main;
+  document.getElementById('rb-sub').textContent=sub;
+}
+
+async function fetchPrices(){
+  const url = localStorage.getItem(URL_KEY)||'';
+  if(!url){
+    setBar('err','❗ Apps Script URL이 없습니다','⚙️ 설정을 눌러 URL을 입력해주세요');
+    document.getElementById('setup-panel').classList.add('open');
+    return;
+  }
+  const btn=document.getElementById('rb-btn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spin">⏳</span> 업데이트 중…';
+  setBar('loading','⏳ 현재가 불러오는 중…','Google Sheets에서 가격 데이터를 가져오고 있습니다');
+
+  // JSONP 방식으로 CSP 우회
+  jsonpFetch(url, function(data){
+    if(!data || data.error){
+      setBar('err','❌ 실패: '+(data&&data.error||'응답 없음'),'Apps Script 배포 설정을 확인해주세요');
+      btn.disabled=false;
+      btn.innerHTML='🔄 현재가 업데이트';
+      return;
+    }
+    for(const [k,v] of Object.entries(data.prices||{})){
+      if(v!=null && v!=='') prices[k]=v;
+    }
+    usdkrw = prices['USDKRW']||1471;
+    isLive = true;
+    lastUpdated = data.updated||'';
+    recalcRender();
+    setBar('ok',`✅ 업데이트 완료 · USD/KRW: ${Math.round(usdkrw).toLocaleString()}원`,`마지막: ${lastUpdated}`);
+    btn.disabled=false;
+    btn.innerHTML='🔄 현재가 업데이트';
+  });
+}
+
+function jsonpFetch(baseUrl, callback){
+  const cbName = 'jsonp_cb_' + Date.now();
+  const script = document.createElement('script');
+  let done = false;
+
+  window[cbName] = function(data){
+    done = true;
+    cleanup();
+    callback(data);
+  };
+
+  function cleanup(){
+    if(script.parentNode) script.parentNode.removeChild(script);
+    delete window[cbName];
+  }
+
+  // 타임아웃 15초
+  const timer = setTimeout(function(){
+    if(!done){
+      cleanup();
+      callback(null);
+      setBar('err','❌ 타임아웃 — Apps Script 응답이 없습니다','배포 설정 확인 후 다시 시도해주세요');
+      document.getElementById('rb-btn').disabled=false;
+      document.getElementById('rb-btn').innerHTML='🔄 현재가 업데이트';
+    }
+  }, 15000);
+
+  const sep = baseUrl.includes('?') ? '&' : '?';
+  script.src = `${baseUrl}${sep}callback=${cbName}`;
+  document.head.appendChild(script);
+}
+
+// ═══════════════════════════════════════════
+// 탭 / 설정
+// ═══════════════════════════════════════════
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+  el.classList.add('on');
+  if(id==='etf') renderEtfPage();
+}
+function toggleSetup(){
+  const p=document.getElementById('setup-panel');
+  p.classList.toggle('open');
+  document.getElementById('gas-url').value=localStorage.getItem(URL_KEY)||'';
+}
+function saveUrl(){
+  const url=document.getElementById('gas-url').value.trim();
+  if(!url.startsWith('https://script.google.com')){ alert('올바른 Apps Script URL을 입력해주세요.'); return; }
+  localStorage.setItem(URL_KEY,url);
+  document.getElementById('setup-panel').classList.remove('open');
+  setBar('idle','✅ URL 저장 완료! 현재가 업데이트 버튼을 눌러주세요.',url.slice(0,55)+'…');
+}
+
+// ═══════════════════════════════════════════
+// 초기화
+// ═══════════════════════════════════════════
+window.addEventListener('load',()=>{
+  // 이미 알고 있는 URL 자동 저장
+  const knownUrl = 'https://script.google.com/macros/s/AKfycbwgz1ju7SN5Nb6wHHjpLcwtsvY1JruNJOhNkAKPD04Bwad1i6r48OwBOUE8RwzBugc7SA/exec';
+  if(!localStorage.getItem(URL_KEY)) localStorage.setItem(URL_KEY, knownUrl);
+  const saved=localStorage.getItem(URL_KEY);
+  setBar('idle','Apps Script 연결됨 · 🔄 현재가 업데이트를 눌러주세요', saved.slice(0,55)+'…');
+  recalcRender();
+});
+</script>
+</body>
+</html>
