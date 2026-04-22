@@ -414,7 +414,7 @@ const PORTFOLIO = {
       {id:'tm_d7', name:'TIGER 미국배당다우존스', ticker:'458730', type:'KR', qty:374, avgPrice:12289},
     ]},
     overseas:{ label:'해외주식', badge:'b-ovs', accountId:'7083658839-01', stocks:[
-      {id:'tm_o1',  name:'버크셔 해서웨이B', ticker:'BRK-B', type:'US', qty:1,  avgPrice:269.825},
+      {id:'tm_o1',  name:'버크셔 해서웨이B', ticker:'BRK.B', type:'US', qty:1,  avgPrice:269.825},
       {id:'tm_o2',  name:'월트 디즈니',      ticker:'DIS',   type:'US', qty:2,  avgPrice:141.69},
       {id:'tm_o3',  name:'KOMP',             ticker:'KOMP',  type:'US', qty:2,  avgPrice:65.0},
       {id:'tm_o4',  name:'AT&T',             ticker:'T',     type:'US', qty:5,  avgPrice:28.86},
@@ -444,7 +444,7 @@ let prices = {
   '133690':174485, '360750':26055, '379800':26145, '458730':14585,
   'KOMP':66.02, 'T':25.98, 'AAPL':267.59, 'FSLR':188.19,
   'GOOGL':334.50, 'MSFT':426.77, 'SDGR':13.00, 'TSLA':389.50,
-  'WBD':27.31, 'BRK-B':470.00, 'DIS':104.75, 'SBUX':97.92,
+  'WBD':27.31, 'BRK.B':470.00, 'DIS':104.75, 'SBUX':97.92,
   'USDKRW':1471,
 };
 let usdkrw = prices['USDKRW'];
@@ -726,22 +726,39 @@ function renderHoldings(){
 // ── 탭2: 수익전망 ───────────────────────────
 function renderForecast(){
   const sy=getEtfByPerson('sooyul'), tm=getEtfByPerson('taemin');
+
+  // 그래프용 데이터 계산 (기본 시나리오, 10년)
+  const years=[0,1,2,3,5,7,10,15,20,30];
+  function buildChartData(personKey, h, scenario){
+    return ETF_KEYS.map(ek=>{
+      const m=ETF_META[ek];
+      const ev=h[ek].eval;
+      const rate=m[scenario]/100;
+      return {
+        label: ETF_LABELS[ek],
+        color: ETF_COLORS[ek],
+        data: years.map(yr=>ev>0 ? Math.round(ev*Math.pow(1+rate,yr)) : 0)
+      };
+    });
+  }
+
+  // 개인별 + ETF별 상세 카드
   function forecastCard(ek){
     const m=ETF_META[ek];
     const syEv=sy[ek].eval, tmEv=tm[ek].eval;
     const syPnl=syEv-sy[ek].cost, syPct=sy[ek].cost>0?syPnl/sy[ek].cost*100:0;
     const tmPnl=tmEv-tm[ek].cost, tmPct=tm[ek].cost>0?tmPnl/tm[ek].cost*100:0;
-    const rows=[1,3,5,10,30,60].map(yr=>{
+    const rows=[1,3,5,10,20,30].map(yr=>{
       function cell(ev,rate){
         if(!ev) return `<td style="color:var(--muted)">—</td>`;
         const v=ev*Math.pow(1+rate/100,yr);
         const c=rate<0?'var(--neg)':rate===m.base?'var(--pos)':'#2563eb';
-        return `<td style="color:${c};font-weight:700">${W(v)}</td>`;
+        return `<td style="color:${c};font-weight:700;font-size:10px">${W(v)}</td>`;
       }
       return `<tr><td><b>${yr}년</b></td>${cell(syEv,m.bear)}${cell(syEv,m.base)}${cell(syEv,m.bull)}${cell(tmEv,m.bear)}${cell(tmEv,m.base)}${cell(tmEv,m.bull)}</tr>`;
     }).join('');
     return `
-    <div class="etf-hero ${m.heroClass}">
+    <div class="etf-hero ${m.heroClass}" style="margin-top:14px">
       <div class="etf-name">${m.label}</div>
       <div class="etf-fullname">${m.fullname}</div>
       <div class="etf-stats">
@@ -750,16 +767,16 @@ function renderForecast(){
         <div class="etf-stat"><div class="etf-stat-lbl">리밸런싱</div><div class="etf-stat-val">${m.rebal}</div><div class="etf-stat-sub">${m.desc.split('.')[0]}</div></div>
       </div>
     </div>
-    <div style="background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:6px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
         <div style="background:#f5f3ff;border-radius:10px;padding:10px">
-          <div style="font-size:9px;font-weight:700;color:#7c3aed;text-transform:uppercase;margin-bottom:4px">👩 소율 현재</div>
-          <div style="font-size:16px;font-weight:900">${syEv?W(syEv):'보유없음'}</div>
+          <div style="font-size:9px;font-weight:700;color:#7c3aed;text-transform:uppercase;margin-bottom:4px">👩 소율</div>
+          <div style="font-size:15px;font-weight:900">${syEv?W(syEv):'보유없음'}</div>
           ${syEv?`<div style="font-size:11px;font-weight:700;margin-top:2px" class="${cls(syPnl)}">${P(syPnl)} ${Pp(syPct)}</div>`:''}
         </div>
         <div style="background:#fffbeb;border-radius:10px;padding:10px">
-          <div style="font-size:9px;font-weight:700;color:#d97706;text-transform:uppercase;margin-bottom:4px">👨 태민 현재</div>
-          <div style="font-size:16px;font-weight:900">${tmEv?W(tmEv):'보유없음'}</div>
+          <div style="font-size:9px;font-weight:700;color:#d97706;text-transform:uppercase;margin-bottom:4px">👨 태민</div>
+          <div style="font-size:15px;font-weight:900">${tmEv?W(tmEv):'보유없음'}</div>
           ${tmEv?`<div style="font-size:11px;font-weight:700;margin-top:2px" class="${cls(tmPnl)}">${P(tmPnl)} ${Pp(tmPct)}</div>`:''}
         </div>
       </div>
@@ -769,7 +786,7 @@ function renderForecast(){
         <div class="scen bull"><div class="scen-lbl">상승장</div><div class="scen-pct">+${m.bull}%</div><div class="scen-desc">${m.bullDesc}</div></div>
       </div>
       <div style="overflow-x:auto;margin-top:8px">
-        <table class="ftbl" style="min-width:320px">
+        <table class="ftbl" style="min-width:300px">
           <thead>
             <tr><th rowspan="2">기간</th>
               <th colspan="3" style="color:#6366f1;border-bottom:1px solid #e2e8f0">👩 소율</th>
@@ -782,9 +799,174 @@ function renderForecast(){
       </div>
     </div>`;
   }
+
+  // 그래프 HTML 생성
+  const chartHtml = `
+  <div style="background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px">
+    <div style="font-size:13px;font-weight:800;margin-bottom:4px">📈 ETF 3종 성장 전망 그래프</div>
+    <div style="font-size:10px;color:var(--muted);margin-bottom:10px">기본 시나리오 · 현재 평가금액 기준 (원)</div>
+
+    <!-- 사람 선택 탭 -->
+    <div style="display:flex;gap:6px;margin-bottom:12px">
+      <button id="chart-sy-btn" onclick="switchChartPerson('sy')"
+        style="flex:1;border:1.5px solid #6366f1;background:#6366f1;color:#fff;border-radius:8px;padding:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">
+        👩 소율
+      </button>
+      <button id="chart-tm-btn" onclick="switchChartPerson('tm')"
+        style="flex:1;border:1.5px solid var(--border);background:#fff;color:var(--sub);border-radius:8px;padding:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">
+        👨 태민
+      </button>
+    </div>
+
+    <!-- 시나리오 선택 -->
+    <div style="display:flex;gap:5px;margin-bottom:12px">
+      <button id="scen-base-btn" onclick="switchChartScen('base')"
+        style="flex:1;background:#f0fdf4;border:1.5px solid #bbf7d0;color:#16a34a;border-radius:8px;padding:5px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer">
+        📊 기본
+      </button>
+      <button id="scen-bull-btn" onclick="switchChartScen('bull')"
+        style="flex:1;background:#fff;border:1.5px solid var(--border);color:var(--sub);border-radius:8px;padding:5px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer">
+        🚀 상승
+      </button>
+      <button id="scen-bear-btn" onclick="switchChartScen('bear')"
+        style="flex:1;background:#fff;border:1.5px solid var(--border);color:var(--sub);border-radius:8px;padding:5px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer">
+        📉 하락
+      </button>
+    </div>
+
+    <canvas id="etf-chart" style="width:100%;max-height:260px"></canvas>
+
+    <!-- 범례 -->
+    <div style="display:flex;justify-content:center;gap:14px;margin-top:10px">
+      ${ETF_KEYS.map(k=>`
+        <div style="display:flex;align-items:center;gap:4px">
+          <div style="width:12px;height:3px;background:${ETF_COLORS[k]};border-radius:2px"></div>
+          <span style="font-size:10px;font-weight:600;color:var(--sub)">${ETF_LABELS[k]}</span>
+        </div>`).join('')}
+    </div>
+  </div>`;
+
   document.getElementById('etf-forecast').innerHTML =
+    chartHtml +
     ETF_KEYS.map(forecastCard).join('') +
-    `<div class="notice-box">⚠️ 수익 전망은 과거 실적 기반 참고용 추정치입니다. 실제 수익은 환율·세금·수수료에 따라 달라질 수 있습니다.</div>`;
+    `<div class="notice-box">⚠️ 수익 전망은 과거 실적 기반 참고용 추정치입니다. 환율·세금·수수료에 따라 실제 수익은 달라질 수 있습니다.</div>`;
+
+  // Chart.js 로드 후 그래프 그리기
+  loadChartJs(()=>{
+    window._chartPerson = 'sy';
+    window._chartScen   = 'base';
+    window._chartSyData = buildChartData('sooyul', sy, 'base');
+    window._chartTmData = buildChartData('taemin', tm, 'base');
+    window._chartSy     = sy;
+    window._chartTm     = tm;
+    drawEtfChart();
+  });
+}
+
+function loadChartJs(cb){
+  if(window.Chart){ cb(); return; }
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';
+  s.onload=cb;
+  document.head.appendChild(s);
+}
+
+function drawEtfChart(){
+  const person = window._chartPerson;
+  const scen   = window._chartScen;
+  const h      = person==='sy' ? window._chartSy : window._chartTm;
+  const years  = [0,1,2,3,5,7,10,15,20,30];
+
+  const datasets = ETF_KEYS.map(ek=>{
+    const m   = ETF_META[ek];
+    const ev  = h[ek].eval;
+    const rate= m[scen]/100;
+    return {
+      label: ETF_LABELS[ek],
+      data: years.map(yr=> ev>0 ? Math.round(ev*Math.pow(1+rate,yr)/10000)*10000 : 0),
+      borderColor: ETF_COLORS[ek],
+      backgroundColor: ETF_COLORS[ek]+'22',
+      borderWidth: 2.5,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      tension: 0.35,
+      fill: false,
+    };
+  });
+
+  const ctx = document.getElementById('etf-chart');
+  if(!ctx) return;
+
+  if(window._etfChart) window._etfChart.destroy();
+
+  window._etfChart = new Chart(ctx, {
+    type:'line',
+    data:{ labels: years.map(y=>y+'년'), datasets },
+    options:{
+      responsive:true,
+      maintainAspectRatio:true,
+      aspectRatio:1.7,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{
+        legend:{ display:false },
+        tooltip:{
+          callbacks:{
+            label: ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('ko-KR')}원`
+          }
+        }
+      },
+      scales:{
+        x:{
+          grid:{ color:'#f1f5f9' },
+          ticks:{ font:{size:10}, color:'#94a3b8' }
+        },
+        y:{
+          grid:{ color:'#f1f5f9' },
+          ticks:{
+            font:{size:10}, color:'#94a3b8',
+            callback: v=>{
+              if(v>=100000000) return (v/100000000).toFixed(0)+'억';
+              if(v>=10000) return (v/10000).toFixed(0)+'만';
+              return v.toLocaleString();
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function switchChartPerson(p){
+  window._chartPerson = p;
+  // 버튼 스타일
+  ['sy','tm'].forEach(id=>{
+    const btn=document.getElementById('chart-'+id+'-btn');
+    if(!btn) return;
+    const on = id===p;
+    btn.style.background = on?'#6366f1':'#fff';
+    btn.style.color      = on?'#fff':'var(--sub)';
+    btn.style.borderColor= on?'#6366f1':'var(--border)';
+  });
+  drawEtfChart();
+}
+
+function switchChartScen(s){
+  window._chartScen = s;
+  // 버튼 스타일
+  const cfg={
+    base:{bg:'#f0fdf4',border:'#bbf7d0',color:'#16a34a'},
+    bull:{bg:'#eff6ff',border:'#bfdbfe',color:'#2563eb'},
+    bear:{bg:'#fef2f2',border:'#fecaca',color:'#ef4444'},
+  };
+  ['base','bull','bear'].forEach(id=>{
+    const btn=document.getElementById('scen-'+id+'-btn');
+    if(!btn) return;
+    const on=id===s;
+    btn.style.background = on?cfg[id].bg:'#fff';
+    btn.style.borderColor= on?cfg[id].border:'var(--border)';
+    btn.style.color      = on?cfg[id].color:'var(--sub)';
+  });
+  drawEtfChart();
 }
 
 // ── 탭3: 추가투자 시뮬레이터 ────────────────
@@ -850,14 +1032,26 @@ function runSimulate(){
       `<div style="color:var(--neg);font-size:12px;font-weight:700;padding:8px">⚠️ 비중 합계가 100%가 되어야 합니다 (현재 ${Math.round(sum*100)}%)</div>`;
     return;
   }
+
   function blendedRate(sc){ return ETF_KEYS.reduce((s,k)=>s+alloc[k]*(ETF_META[k][sc]/100),0); }
   const bearR=blendedRate('bear'), baseR=blendedRate('base'), bullR=blendedRate('bull');
   function calcFV(mr, months){ let fv=0; for(let i=0;i<months;i++) fv=(fv+monthly)*(1+mr); return fv; }
-  const yrs=[1,3,5,10,20,30,Math.min(years,60)].filter((v,i,a)=>v<=years&&a.indexOf(v)===i);
-  if(!yrs.includes(years)) yrs.push(years);
-  yrs.sort((a,b)=>a-b);
-  const totalInvested=monthly*12*years;
-  const rows=yrs.map(yr=>{
+
+  // 그래프용 연도 포인트 (촘촘하게)
+  const maxYr = Math.min(years, 60);
+  const chartYrs = [];
+  for(let y=0; y<=maxYr; y++) chartYrs.push(y);
+
+  const totalInvested = monthly*12*years;
+  const finalBase = calcFV(Math.pow(1+baseR,1/12)-1, years*12);
+  const finalBull = calcFV(Math.pow(1+bullR,1/12)-1, years*12);
+  const finalBear = calcFV(Math.pow(1+bearR,1/12)-1, years*12);
+
+  // 요약 카드 데이터
+  const summaryRows = [1,3,5,10,20,30].filter(y=>y<=years).concat(years)
+    .filter((v,i,a)=>a.indexOf(v)===i).sort((a,b)=>a-b);
+
+  const tableRows = summaryRows.map(yr=>{
     const months=yr*12;
     const bear=calcFV(Math.pow(1+bearR,1/12)-1,months);
     const base=calcFV(Math.pow(1+baseR,1/12)-1,months);
@@ -870,23 +1064,128 @@ function runSimulate(){
       <td style="color:#2563eb;font-weight:700">${W(bull)}<br><span style="font-size:9px">${Pp((bull/inv-1)*100)}</span></td>
     </tr>`;
   }).join('');
-  const finalBase=calcFV(Math.pow(1+baseR,1/12)-1,years*12);
+
   document.getElementById('sim-result').innerHTML=`
     <div class="sim-result">
+      <!-- 요약 카드 -->
       <div style="font-size:11px;font-weight:700;color:var(--sub);margin-bottom:8px">
-        월 ${monthly.toLocaleString()}원 × ${years}년 · 혼합수익 하락${(bearR*100).toFixed(1)}% / 기본+${(baseR*100).toFixed(1)}% / 상승+${(bullR*100).toFixed(1)}%
+        월 ${monthly.toLocaleString()}원 × ${years}년 · 혼합수익률 하락${(bearR*100).toFixed(1)}% / 기본+${(baseR*100).toFixed(1)}% / 상승+${(bullR*100).toFixed(1)}%
       </div>
-      <div class="sim-res-grid" style="margin-bottom:10px">
-        <div class="sim-res-item"><div class="sim-res-lbl">총 투자금액</div><div class="sim-res-val">${W(totalInvested)}</div><div class="sim-res-sub">${years}년간</div></div>
-        <div class="sim-res-item"><div class="sim-res-lbl">기본 시나리오 최종</div><div class="sim-res-val pos">${W(finalBase)}</div><div class="sim-res-sub">수익 ${W(finalBase-totalInvested)}</div></div>
+      <div class="sim-res-grid" style="margin-bottom:12px">
+        <div class="sim-res-item">
+          <div class="sim-res-lbl">총 투자금액</div>
+          <div class="sim-res-val">${W(totalInvested)}</div>
+          <div class="sim-res-sub">${years}년간 납입</div>
+        </div>
+        <div class="sim-res-item">
+          <div class="sim-res-lbl">기본 시나리오 최종</div>
+          <div class="sim-res-val pos">${W(finalBase)}</div>
+          <div class="sim-res-sub">수익 ${W(finalBase-totalInvested)}</div>
+        </div>
       </div>
+
+      <!-- 그래프 -->
+      <div style="font-size:12px;font-weight:800;margin-bottom:8px">📈 시나리오별 자산 성장 그래프</div>
+      <canvas id="sim-chart" style="width:100%;max-height:240px;margin-bottom:10px"></canvas>
+      <div style="display:flex;justify-content:center;gap:16px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:3px;background:#ef4444;border-radius:2px"></div><span style="font-size:10px;color:var(--sub)">하락장</span></div>
+        <div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:3px;background:#10b981;border-radius:2px"></div><span style="font-size:10px;color:var(--sub)">기본</span></div>
+        <div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:3px;background:#2563eb;border-radius:2px"></div><span style="font-size:10px;color:var(--sub)">상승장</span></div>
+        <div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:3px;background:#94a3b8;border-radius:2px;border-top:2px dashed #94a3b8"></div><span style="font-size:10px;color:var(--sub)">원금</span></div>
+      </div>
+
+      <!-- 상세 테이블 -->
       <div style="overflow-x:auto">
         <table class="ftbl" style="min-width:260px">
-          <thead><tr><th>기간</th><th style="color:var(--neg)">하락장</th><th style="color:var(--pos)">기본</th><th style="color:#2563eb">상승장</th></tr></thead>
-          <tbody>${rows}</tbody>
+          <thead><tr>
+            <th>기간</th>
+            <th style="color:var(--neg)">하락장</th>
+            <th style="color:var(--pos)">기본</th>
+            <th style="color:#2563eb">상승장</th>
+          </tr></thead>
+          <tbody>${tableRows}</tbody>
         </table>
       </div>
     </div>`;
+
+  // Chart.js 로드 후 그래프
+  loadChartJs(()=>{
+    const ctx = document.getElementById('sim-chart');
+    if(!ctx) return;
+    if(window._simChart) window._simChart.destroy();
+
+    const bearMr = Math.pow(1+bearR,1/12)-1;
+    const baseMr = Math.pow(1+baseR,1/12)-1;
+    const bullMr = Math.pow(1+bullR,1/12)-1;
+
+    window._simChart = new Chart(ctx, {
+      type:'line',
+      data:{
+        labels: chartYrs.map(y=>y+'년'),
+        datasets:[
+          {
+            label:'하락장',
+            data: chartYrs.map(y=>Math.round(calcFV(bearMr,y*12))),
+            borderColor:'#ef4444', backgroundColor:'#ef444410',
+            borderWidth:2, pointRadius:0, tension:0.4, fill:false,
+          },
+          {
+            label:'기본',
+            data: chartYrs.map(y=>Math.round(calcFV(baseMr,y*12))),
+            borderColor:'#10b981', backgroundColor:'#10b98115',
+            borderWidth:2.5, pointRadius:0, tension:0.4, fill:false,
+          },
+          {
+            label:'상승장',
+            data: chartYrs.map(y=>Math.round(calcFV(bullMr,y*12))),
+            borderColor:'#2563eb', backgroundColor:'#2563eb10',
+            borderWidth:2, pointRadius:0, tension:0.4, fill:false,
+          },
+          {
+            label:'원금',
+            data: chartYrs.map(y=>monthly*12*y),
+            borderColor:'#cbd5e1', backgroundColor:'transparent',
+            borderWidth:1.5, borderDash:[5,4], pointRadius:0, tension:0, fill:false,
+          },
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:true,
+        aspectRatio:1.6,
+        interaction:{ mode:'index', intersect:false },
+        plugins:{
+          legend:{ display:false },
+          tooltip:{
+            callbacks:{
+              label: c=>`${c.dataset.label}: ${c.parsed.y.toLocaleString('ko-KR')}원`
+            }
+          }
+        },
+        scales:{
+          x:{
+            grid:{ color:'#f1f5f9' },
+            ticks:{
+              font:{size:10}, color:'#94a3b8',
+              maxTicksLimit: Math.min(maxYr+1, 8),
+            }
+          },
+          y:{
+            grid:{ color:'#f1f5f9' },
+            ticks:{
+              font:{size:10}, color:'#94a3b8',
+              callback: v=>{
+                if(v>=100000000) return (v/100000000).toFixed(1)+'억';
+                if(v>=10000000)  return (v/10000000).toFixed(0)+'천만';
+                if(v>=10000)     return (v/10000).toFixed(0)+'만';
+                return v.toLocaleString();
+              }
+            }
+          }
+        }
+      }
+    });
+  });
 }
 
 // ── 탭4: 추천비중 ───────────────────────────
@@ -1058,7 +1357,7 @@ function saveUrl(){
 // ═══════════════════════════════════════════
 window.addEventListener('load',()=>{
   // 이미 알고 있는 URL 자동 저장
-  const knownUrl = 'https://script.google.com/macros/s/AKfycbwgz1ju7SN5Nb6wHHjpLcwtsvY1JruNJOhNkAKPD04Bwad1i6r48OwBOUE8RwzBugc7SA/exec';
+  const knownUrl = 'https://script.google.com/macros/s/AKfycbz7oSd0tYU2oYK2wb603f_DQScXpUVFbgvqiV2B249D5D5F5KBc9k3cu2QQhEacGsu9/exec';
   if(!localStorage.getItem(URL_KEY)) localStorage.setItem(URL_KEY, knownUrl);
   const saved=localStorage.getItem(URL_KEY);
   setBar('idle','Apps Script 연결됨 · 🔄 현재가 업데이트를 눌러주세요', saved.slice(0,55)+'…');
