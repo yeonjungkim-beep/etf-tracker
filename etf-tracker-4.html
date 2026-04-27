@@ -235,10 +235,11 @@ const CATS=[
   {id:'nasdaq', lb:'나스닥 100',em:'🔵',c:'#3b82f6',bg:'#eff6ff',bd:'#bfdbfe',kw:['나스닥','nasdaq']},
   {id:'sp500',  lb:'S&P 500',   em:'🟢',c:'#16a34a',bg:'#f0fdf4',bd:'#bbf7d0',kw:['s&p500','s&p 500','sp500','에센피']},
   {id:'dow',    lb:'다우존스',   em:'🟠',c:'#ea580c',bg:'#fff7ed',bd:'#fed7aa',kw:['다우존스','배당다우','dow']},
+  {id:'bigtech',lb:'빅테크 TOP7',em:'🟣',c:'#7c3aed',bg:'#faf5ff',bd:'#ddd6fe',kw:['빅테크','bigtech','top7']},
   {id:'other',  lb:'기타',       em:'⚪',c:'#64748b',bg:'#f8fafc',bd:'#e2e8f0',kw:[]},
 ];
 const BCOLORS=['#6366f1','#0ea5e9','#f59e0b','#10b981','#ec4899','#8b5cf6','#14b8a6','#f97316'];
-const PRESETS=['KODEX 미국나스닥100','KODEX 미국S&P500','KODEX 미국배당다우존스','TIGER 미국S&P500','TIGER 미국배당다우존스','TIGER 미국나스닥100','SOL 미국배당다우존스','SOL 미국S&P500미국채혼합50'];
+const PRESETS=['KODEX 미국나스닥100','KODEX 미국S&P500','KODEX 미국배당다우존스','TIGER 미국S&P500','TIGER 미국배당다우존스','TIGER 미국나스닥100','SOL 미국배당다우존스','SOL 미국S&P500미국채혼합50','ACE 미국빅테크TOP7 Plus'];
 const BPRESETS=['삼성증권','한국투자증권','KB증권','NH투자증권','NH투자증권 (IRP·DC)','키움증권','미래에셋증권','신한투자증권','대신증권','카카오페이증권','기타'];
 
 // ── 연도별 실제 수익률 데이터 (1995~2024) ────────────────
@@ -285,35 +286,35 @@ const AGE_PROFILES = {
   '20대': {
     icon:'🚀', name:'공격적 성장형', ageRange:'20~29세',
     desc:'은퇴까지 30년 이상. 높은 변동성을 감수하고 최대 수익률 추구',
-    nasdaq:55, sp500:35, dow:10,
-    reason:'20대는 시간이 가장 큰 자산. 닷컴버블(-36%)이나 금융위기(-42%)가 와도 회복할 시간이 충분합니다. 나스닥100 비중을 높여 AI·빅테크 성장을 극대화하세요.',
+    nasdaq:45, sp500:30, dow:10, bigtech:15,
+    reason:'20대는 시간이 가장 큰 자산. 닷컴버블(-36%)이나 금융위기(-42%)가 와도 회복할 시간이 충분합니다. 나스닥100과 빅테크TOP7을 합쳐 AI·빅테크 성장을 극대화하세요.',
     risk:'높음'
   },
   '30대': {
     icon:'📈', name:'성장형', ageRange:'30~39세',
     desc:'은퇴까지 20~30년. 공격적 성장 유지, 일부 안정성 확보',
-    nasdaq:45, sp500:40, dow:15,
-    reason:'30대도 여전히 공격적 비중이 유리합니다. S&P500의 폭넓은 분산으로 나스닥 변동성을 일부 완충하면서 장기 수익을 노립니다.',
+    nasdaq:40, sp500:35, dow:15, bigtech:10,
+    reason:'30대도 여전히 공격적 비중이 유리합니다. S&P500의 폭넓은 분산으로 나스닥 변동성을 완충하면서, 빅테크TOP7으로 집중 성장을 노립니다.',
     risk:'중高'
   },
   '40대': {
     icon:'⚖️', name:'균형 성장형', ageRange:'40~49세',
     desc:'은퇴까지 15~25년. 성장과 안정의 균형, 자산 보호 시작',
-    nasdaq:35, sp500:40, dow:25,
-    reason:'40대는 자산이 가장 크게 늘어나는 시기지만 손실 회복 기간이 줄어듭니다. S&P500을 핵심으로, 다우존스로 배당·안정성을 보완하는 균형 전략을 추천합니다.',
+    nasdaq:30, sp500:40, dow:25, bigtech:5,
+    reason:'40대는 자산이 가장 크게 늘어나는 시기지만 손실 회복 기간이 줄어듭니다. S&P500을 핵심으로, 다우존스로 배당·안정성을 보완하고 빅테크는 소량 유지하세요.',
     risk:'중간'
   },
   '50대': {
     icon:'🛡️', name:'안정 성장형', ageRange:'50~59세',
     desc:'은퇴까지 5~15년. 자산 보호 강화, 배당 수익 중시',
-    nasdaq:20, sp500:40, dow:40,
-    reason:'50대는 큰 손실이 치명적일 수 있습니다. 다우존스의 배당 안정성을 높이고, S&P500으로 적절한 성장을 유지하세요. 나스닥 비중은 줄여 변동성을 낮춥니다.',
+    nasdaq:20, sp500:40, dow:40, bigtech:0,
+    reason:'50대는 큰 손실이 치명적일 수 있습니다. 다우존스의 배당 안정성을 높이고, S&P500으로 적절한 성장을 유지하세요. 빅테크·나스닥 변동성 자산은 최소화합니다.',
     risk:'중低'
   },
   '60대+': {
     icon:'🌿', name:'보수 안정형', ageRange:'60세 이상',
     desc:'은퇴 임박 또는 은퇴 후. 원금 보존, 안정적 배당 수익 중심',
-    nasdaq:10, sp500:35, dow:55,
+    nasdaq:10, sp500:35, dow:55, bigtech:0,
     reason:'60대 이상은 변동성 최소화가 최우선. 다우존스 위주 배당주, S&P500의 안정적 수익, 나스닥 최소 비중으로 인플레이션만 방어합니다.',
     risk:'낮음'
   },
@@ -327,32 +328,37 @@ let selectedAge='40대';
 
 const DEFAULT_BROKERS=[
   {name:'삼성증권',irp:false,etfs:[
-    {name:'KODEX 미국나스닥100',   sh:'2232',pr:'25770',bp:'18979'},
-    {name:'KODEX 미국배당다우존스',sh:'764', pr:'12380',bp:'10923'},
-    {name:'KODEX 미국S&P500',      sh:'506', pr:'23560',bp:'21139'},
+    {name:'KODEX 미국나스닥100',   sh:'2232',pr:'26780',bp:'18979'},
+    {name:'KODEX 미국배당다우존스',sh:'775', pr:'12600',bp:'10923'},
+    {name:'KODEX 미국S&P500',      sh:'519', pr:'23990',bp:'21139'},
   ]},
   {name:'한국투자증권',irp:false,etfs:[
-    {name:'TIGER 미국배당다우존스',sh:'1498',pr:'14510',bp:'12141'},
-    {name:'KODEX 미국배당다우존스',sh:'862', pr:'12480',bp:'10577'},
+    {name:'TIGER 미국배당다우존스',sh:'1498',pr:'14660',bp:'12141'},
+    {name:'KODEX 미국배당다우존스',sh:'862', pr:'12600',bp:'10577'},
+    {name:'KODEX 미국S&P500',      sh:'1',  pr:'23990',bp:'23665'},
+    {name:'ACE 미국빅테크TOP7 Plus',sh:'1',  pr:'24580',bp:'24190'},
   ]},
   {name:'KB증권',irp:false,etfs:[
-    {name:'KODEX 미국S&P500',      sh:'167',pr:'23560',bp:'22606'},
-    {name:'KODEX 미국나스닥100',   sh:'1',  pr:'25770',bp:'23870'},
-    {name:'TIGER 미국배당다우존스',sh:'300',pr:'14385',bp:'13857'},
+    {name:'KODEX 미국S&P500',      sh:'217',pr:'23990',bp:'22606'},
+    {name:'KODEX 미국나스닥100',   sh:'13', pr:'26780',bp:'23870'},
+    {name:'TIGER 미국배당다우존스',sh:'331',pr:'14660',bp:'13857'},
   ]},
   {name:'NH투자증권 (IRP·DC)',irp:true,etfs:[
-    {name:'TIGER 미국S&P500',           sh:'13',pr:'25105',bp:'24559'},
-    {name:'SOL 미국배당다우존스',        sh:'48',pr:'13345',bp:'11941'},
-    {name:'TIGER 미국배당다우존스',      sh:'44',pr:'14385',bp:'12924'},
-    {name:'SOL 미국S&P500미국채혼합50',  sh:'64',pr:'11245',bp:'11070'},
+    {name:'TIGER 미국S&P500',           sh:'18',pr:'26240',bp:'24559'},
+    {name:'SOL 미국배당다우존스',        sh:'53',pr:'13420',bp:'11941'},
+    {name:'TIGER 미국배당다우존스',      sh:'44',pr:'14660',bp:'12924'},
+    {name:'SOL 미국S&P500미국채혼합50',  sh:'73',pr:'11470',bp:'11070'},
   ]},
 ];
 
 // localStorage에서 불러오기
+const DATA_VERSION = '5.2'; // DEFAULT_BROKERS 바뀔 때마다 올리면 자동 리셋
+
 function loadBrokers() {
   try {
+    const savedVer = localStorage.getItem('etf_version');
     const saved = localStorage.getItem('etf_brokers');
-    if (saved) {
+    if (saved && savedVer === DATA_VERSION) {
       const parsed = JSON.parse(saved);
       return parsed.map(b => {
         const defB = DEFAULT_BROKERS.find(d => d.name === b.name);
@@ -366,6 +372,9 @@ function loadBrokers() {
       });
     }
   } catch(e) {}
+  // 버전 불일치 or 저장 없음 → DEFAULT_BROKERS로 초기화
+  localStorage.setItem('etf_version', DATA_VERSION);
+  localStorage.removeItem('etf_brokers');
   return DEFAULT_BROKERS.map(b => ({
     ...b, id: nid(),
     etfs: b.etfs.map(e => ({...e, id: nid(), bp: e.bp||''}))
@@ -379,6 +388,7 @@ function saveBrokers() {
       etfs: b.etfs.map(e => ({name:e.name, sh:e.sh, pr:e.pr, bp:e.bp||''}))
     }));
     localStorage.setItem('etf_brokers', JSON.stringify(toSave));
+    localStorage.setItem('etf_version', DATA_VERSION);
   } catch(e) {}
 }
 
@@ -779,7 +789,8 @@ function renderRec(){
     {c:'#3b82f6',w:prof.nasdaq,lb:'나스닥'},
     {c:'#16a34a',w:prof.sp500,lb:'S&P'},
     {c:'#ea580c',w:prof.dow,lb:'다우'},
-  ];
+    {c:'#7c3aed',w:prof.bigtech||0,lb:'빅테크'},
+  ].filter(s=>s.w>0);
   segs.forEach(s=>{
     const seg=document.createElement('div');seg.className='rec-alloc-seg';
     seg.style.cssText=`flex:${s.w};background:${s.c}`;
@@ -790,10 +801,11 @@ function renderRec(){
   // 배분 아이템
   const items=document.createElement('div');items.className='rec-items';
   [
-    {em:'🔵',name:'나스닥 100',pct:prof.nasdaq,c:'#3b82f6',bg:'#eff6ff'},
-    {em:'🟢',name:'S&P 500',  pct:prof.sp500, c:'#16a34a',bg:'#f0fdf4'},
-    {em:'🟠',name:'다우존스',  pct:prof.dow,   c:'#ea580c',bg:'#fff7ed'},
-  ].forEach(it=>{
+    {em:'🔵',name:'나스닥 100',  pct:prof.nasdaq,      c:'#3b82f6',bg:'#eff6ff'},
+    {em:'🟢',name:'S&P 500',     pct:prof.sp500,       c:'#16a34a',bg:'#f0fdf4'},
+    {em:'🟠',name:'다우존스',    pct:prof.dow,         c:'#ea580c',bg:'#fff7ed'},
+    {em:'🟣',name:'빅테크 TOP7', pct:prof.bigtech||0,  c:'#7c3aed',bg:'#faf5ff'},
+  ].filter(it=>it.pct>0).forEach(it=>{
     const row=document.createElement('div');row.className='rec-item';row.style.background=it.bg;
     const em=document.createElement('span');em.style.fontSize='18px';em.textContent=it.em;
     const name=document.createElement('span');name.className='rec-item-name';name.style.color=it.c;name.textContent=it.name;
@@ -847,15 +859,17 @@ function renderRec(){
   const curNasdaq=gt>0?pct(cts.find(c=>c.id==='nasdaq').total,gt):0;
   const curSp500=gt>0?pct(cts.find(c=>c.id==='sp500').total,gt):0;
   const curDow=gt>0?pct(cts.find(c=>c.id==='dow').total,gt):0;
+  const curBigtech=gt>0?pct(cts.find(c=>c.id==='bigtech').total,gt):0;
 
   if(gt>0){
     const gapCard=document.createElement('div');gapCard.className='rec-gap';
     const gapTitle=document.createElement('div');gapTitle.className='rec-gap-title';gapTitle.textContent='⚡ 내 현재 비중 vs 추천 비중 비교';
     gapCard.appendChild(gapTitle);
     [
-      {lb:'🔵 나스닥 100',cur:curNasdaq,rec:prof.nasdaq,c:'#3b82f6'},
-      {lb:'🟢 S&P 500',   cur:curSp500, rec:prof.sp500, c:'#16a34a'},
-      {lb:'🟠 다우존스',   cur:curDow,   rec:prof.dow,   c:'#ea580c'},
+      {lb:'🔵 나스닥 100', cur:curNasdaq,  rec:prof.nasdaq,       c:'#3b82f6'},
+      {lb:'🟢 S&P 500',    cur:curSp500,   rec:prof.sp500,        c:'#16a34a'},
+      {lb:'🟠 다우존스',    cur:curDow,     rec:prof.dow,          c:'#ea580c'},
+      {lb:'🟣 빅테크 TOP7',cur:curBigtech, rec:prof.bigtech||0,   c:'#7c3aed'},
     ].forEach(row=>{
       const diff=row.cur-row.rec;
       const rowEl=document.createElement('div');rowEl.className='rec-gap-row';
@@ -1406,3 +1420,4 @@ renderAll();
 </script>
 </body>
 </html>
+
