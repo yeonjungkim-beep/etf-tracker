@@ -140,7 +140,6 @@ body{background:var(--bg);font-family:'Noto Sans KR',sans-serif;color:var(--text
 .etf-hero.nasdaq{background:linear-gradient(135deg,#1d4ed8,#3b82f6)}
 .etf-hero.sp500{background:linear-gradient(135deg,#065f46,#10b981)}
 .etf-hero.div{background:linear-gradient(135deg,#92400e,#f59e0b)}
-.etf-hero.bigtech{background:linear-gradient(135deg,#6b21a8,#a855f7)}
 .etf-name{font-size:10px;font-weight:700;opacity:.8;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
 .etf-fullname{font-size:15px;font-weight:900;margin-bottom:10px;line-height:1.3}
 .etf-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
@@ -399,10 +398,9 @@ const PORTFOLIO = {
       {id:'sy_o9', name:'워너브로스',    ticker:'WBD',   type:'US', qty:1,  avgPrice:24.075},
     ]},
     pension:{ label:'연금저축', badge:'b-pen', accountId:'7083658088-15', stocks:[
-      {id:'sy_p1', name:'TIGER 미국S&P500',                ticker:'360750', type:'KR', qty:11, avgPrice:25036},
-      {id:'sy_p2', name:'KODEX 미국나스닥100',             ticker:'379800', type:'KR', qty:7,  avgPrice:25174},
-      {id:'sy_p3', name:'TIGER 미국배당다우존스',          ticker:'458730', type:'KR', qty:10, avgPrice:14476},
-      {id:'sy_p4', name:'ACE 미국빅테크TOP7 Plus',        ticker:'449180', type:'KR', qty:1,  avgPrice:24570},
+      {id:'sy_p1', name:'TIGER 미국S&P500',       ticker:'360750', type:'KR', qty:11, avgPrice:25036},
+      {id:'sy_p2', name:'KODEX 미국나스닥100',     ticker:'379800', type:'KR', qty:7,  avgPrice:25174},
+      {id:'sy_p3', name:'TIGER 미국배당다우존스',  ticker:'458730', type:'KR', qty:10, avgPrice:14476},
     ]},
   },
   taemin: {
@@ -430,10 +428,9 @@ const PORTFOLIO = {
       {id:'tm_o12', name:'워너브로스',       ticker:'WBD',   type:'US', qty:1,  avgPrice:24.075},
     ]},
     pension:{ label:'연금저축', badge:'b-pen', accountId:'7083658839-15', stocks:[
-      {id:'tm_p1', name:'TIGER 미국S&P500',                ticker:'360750', type:'KR', qty:11, avgPrice:24920},
-      {id:'tm_p2', name:'KODEX 미국나스닥100',             ticker:'379800', type:'KR', qty:7,  avgPrice:25234},
-      {id:'tm_p3', name:'TIGER 미국배당다우존스',          ticker:'458730', type:'KR', qty:9,  avgPrice:14447},
-      {id:'tm_p4', name:'ACE 미국빅테크TOP7 Plus',        ticker:'449180', type:'KR', qty:1,  avgPrice:24580},
+      {id:'tm_p1', name:'TIGER 미국S&P500',       ticker:'360750', type:'KR', qty:11, avgPrice:24920},
+      {id:'tm_p2', name:'KODEX 미국나스닥100',     ticker:'379800', type:'KR', qty:7,  avgPrice:25234},
+      {id:'tm_p3', name:'TIGER 미국배당다우존스',  ticker:'458730', type:'KR', qty:9,  avgPrice:14447},
     ]},
   }
 };
@@ -444,7 +441,7 @@ const PORTFOLIO = {
 // ═══════════════════════════════════════════
 let prices = {
   '096760':7330, '035420':213750, '034730':379500,
-  '133690':174485, '360750':26055, '379800':26145, '458730':14585, '449180':24580,
+  '133690':174485, '360750':26055, '379800':26145, '458730':14585,
   'KOMP':66.02, 'T':25.98, 'AAPL':267.59, 'FSLR':188.19,
   'GOOGL':334.50, 'MSFT':426.77, 'SDGR':13.00, 'TSLA':389.50,
   'WBD':27.31, 'BRK.B':470.00, 'DIS':104.75, 'SBUX':97.92,
@@ -460,18 +457,22 @@ let lastUpdated = '';
 const QTY_KEY = 'fam_qty_v2';
 const URL_KEY = 'fam_gas_url';
 
-function loadQty(){ try{ return JSON.parse(localStorage.getItem(QTY_KEY))||{}; }catch{ return {}; } }
-function saveQty(m){ localStorage.setItem(QTY_KEY, JSON.stringify(m)); }
-function getQty(id, def){ const q=loadQty(); return q[id]!==undefined ? q[id] : def; }
+// 인메모리 qty 맵 — localStorage와 항상 동기화
+let qtyMap = {};
+function loadQty(){ try{ qtyMap = JSON.parse(localStorage.getItem(QTY_KEY))||{}; }catch{ qtyMap={}; } }
+function saveQty(){ localStorage.setItem(QTY_KEY, JSON.stringify(qtyMap)); }
+function getQty(id, def){ return qtyMap[id]!==undefined ? qtyMap[id] : def; }
 
 function onQtyChange(id, val){
   const n = parseInt(val);
   if(isNaN(n)||n<0) return;
-  const q = loadQty(); q[id]=n; saveQty(q);
+  qtyMap[id] = n;
+  saveQty();
   recalcRender();
 }
 function resetQty(){
   if(!confirm('저장된 수량을 기본값으로 초기화할까요?')) return;
+  qtyMap = {};
   localStorage.removeItem(QTY_KEY);
   recalcRender();
 }
@@ -506,12 +507,13 @@ function calcGroup(gd){
 
 function calcPerson(pd){
   const groups={};
-  let tEval=0, tPnl=0;
+  let tEval=0, tPnl=0, tCost=0;
   for(const [k,v] of Object.entries(pd)){
     groups[k]=calcGroup(v);
-    tEval+=groups[k].tEval; tPnl+=groups[k].tPnl;
+    tEval+=groups[k].tEval; tPnl+=groups[k].tPnl; tCost+=groups[k].tEval-groups[k].tPnl;
   }
-  return { groups, tEval, tPnl };
+  const tPct = tCost>0 ? tPnl/tCost*100 : 0;
+  return { groups, tEval, tPnl, tPct };
 }
 
 // ═══════════════════════════════════════════
@@ -545,7 +547,7 @@ function renderRow(s){
   </div>
   <div class="s-qty-wrap">
     <input class="qty-inp" type="number" min="0" value="${s.qty}"
-      onchange="onQtyChange('${s.id}',this.value)">
+      onchange="onQtyChange('${s.id}',this.value)" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
     <span class="s-qty-lbl">주</span>
   </div>
   <div class="s-r">
@@ -588,18 +590,24 @@ function recalcRender(){
   const tm = calcPerson(PORTFOLIO.taemin);
   const famEval = sy.tEval + tm.tEval;
   const famPnl  = sy.tPnl  + tm.tPnl;
+  const famCost = famEval - famPnl;
+  const famPct  = famCost>0 ? famPnl/famCost*100 : 0;
 
   // 헤더
   setText('hd-eval', W(famEval));
-  setEl('hd-pnl', P(famPnl), cls(famPnl));
+  document.getElementById('hd-pnl').innerHTML =
+    `<span class="${cls(famPnl)}">${P(famPnl)}</span> <span style="font-size:10px;font-weight:600;opacity:.85" class="${cls(famPct)}">${Pp(famPct)}</span>`;
 
   // 전체요약 카드
   setText('ov-fam-eval', W(famEval));
-  setText('ov-fam-pnl',  P(famPnl));
+  document.getElementById('ov-fam-pnl').innerHTML =
+    `<span>${P(famPnl)}</span> <span style="font-size:11px;opacity:.85">${Pp(famPct)}</span>`;
   setText('ov-sy-eval',  W(sy.tEval));
-  setText('ov-sy-pnl',   P(sy.tPnl));
+  document.getElementById('ov-sy-pnl').innerHTML =
+    `${P(sy.tPnl)} <span style="font-size:9px;opacity:.85">${Pp(sy.tPct)}</span>`;
   setText('ov-tm-eval',  W(tm.tEval));
-  setText('ov-tm-pnl',   P(tm.tPnl));
+  document.getElementById('ov-tm-pnl').innerHTML =
+    `${P(tm.tPnl)} <span style="font-size:9px;opacity:.85">${Pp(tm.tPct)}</span>`;
 
   // 요약 테이블
   const G_LABEL = {domestic:'🏦 국내 종합', overseas:'🌍 해외주식', pension:'📌 연금저축'};
@@ -624,22 +632,28 @@ function recalcRender(){
     <div class="cmp-cell">
       <div class="cmp-eval">${W(sy.tEval)}</div>
       <div class="cmp-pnl ${cls(sy.tPnl)}">${P(sy.tPnl)}</div>
+      <div class="cmp-pct ${cls(sy.tPct)}">${Pp(sy.tPct)}</div>
     </div>
     <div class="cmp-cell">
       <div class="cmp-eval">${W(tm.tEval)}</div>
       <div class="cmp-pnl ${cls(tm.tPnl)}">${P(tm.tPnl)}</div>
+      <div class="cmp-pct ${cls(tm.tPct)}">${Pp(tm.tPct)}</div>
     </div>
   </div>`;
   document.getElementById('ov-tbl').innerHTML = tblHtml;
 
   // 소율 탭
   setText('sy-eval', W(sy.tEval));
-  setEl('sy-pnl', P(sy.tPnl), cls(sy.tPnl));
+  document.getElementById('sy-pnl').innerHTML =
+    `<span class="${cls(sy.tPnl)}">${P(sy.tPnl)}</span> <span class="${cls(sy.tPct)}" style="font-size:10px">${Pp(sy.tPct)}</span>`;
+
   document.getElementById('sy-cards').innerHTML = GRP.map(gk=>renderCard(gk,sy.groups[gk])).join('');
 
   // 태민 탭
   setText('tm-eval', W(tm.tEval));
-  setEl('tm-pnl', P(tm.tPnl), cls(tm.tPnl));
+  document.getElementById('tm-pnl').innerHTML =
+    `<span class="${cls(tm.tPnl)}">${P(tm.tPnl)}</span> <span class="${cls(tm.tPct)}" style="font-size:10px">${Pp(tm.tPct)}</span>`;
+
   document.getElementById('tm-cards').innerHTML = GRP.map(gk=>renderCard(gk,tm.groups[gk])).join('');
 }
 
@@ -665,19 +679,14 @@ const ETF_META = {
     desc:'배당 성장 우량주 100개. 월배당+안정성 추구.',
     hist10y:10.1, hist5y:9.8, div:3.5, bear:-12, base:8, bull:15,
     bearDesc:'금리하락 수혜', baseDesc:'배당+성장합산', bullDesc:'경기회복+배당성장', risk:'낮음', rebal:'연간' },
-  bigtech:{ label:'빅테크TOP7', fullname:'ACE 미국빅테크TOP7 Plus', heroClass:'bigtech',
-    color:'#a855f7', tickers:['449180'],
-    desc:'애플·MS·엔비디아·알파벳·아마존·메타·테슬라 집중 투자.',
-    hist10y:20.5, hist5y:18.8, div:0.2, bear:-35, base:14, bull:30,
-    bearDesc:'기술주 고평가 조정', baseDesc:'빅테크 성장 지속', bullDesc:'AI 독점 수혜', risk:'매우높음', rebal:'분기' },
 };
-const ETF_KEYS   = ['nasdaq','sp500','div','bigtech'];
-const ETF_COLORS = {nasdaq:'#3b82f6', sp500:'#10b981', div:'#f59e0b', bigtech:'#a855f7'};
-const ETF_LABELS = {nasdaq:'나스닥100', sp500:'S&P500', div:'배당다우존스', bigtech:'빅테크TOP7'};
-const TICKER_MAP = {'133690':'nasdaq','379800':'nasdaq','360750':'sp500','458730':'div','449180':'bigtech'};
+const ETF_KEYS   = ['nasdaq','sp500','div'];
+const ETF_COLORS = {nasdaq:'#3b82f6', sp500:'#10b981', div:'#f59e0b'};
+const ETF_LABELS = {nasdaq:'나스닥100', sp500:'S&P500', div:'배당다우존스'};
+const TICKER_MAP = {'133690':'nasdaq','379800':'nasdaq','360750':'sp500','458730':'div'};
 
 function getEtfByPerson(personKey){
-  const r={nasdaq:{eval:0,cost:0},sp500:{eval:0,cost:0},div:{eval:0,cost:0},bigtech:{eval:0,cost:0}};
+  const r={nasdaq:{eval:0,cost:0},sp500:{eval:0,cost:0},div:{eval:0,cost:0}};
   for(const gd of Object.values(PORTFOLIO[personKey])){
     for(const s of gd.stocks){
       const ek=TICKER_MAP[s.ticker]; if(!ek) continue;
@@ -997,25 +1006,19 @@ function renderSimulate(){
       <div class="alloc-row">
         <div class="alloc-dot" style="background:#3b82f6"></div>
         <div class="alloc-name">나스닥100</div>
-        <input class="alloc-inp" id="alloc-nasdaq" type="number" value="25" min="0" max="100" oninput="syncAlloc()">
+        <input class="alloc-inp" id="alloc-nasdaq" type="number" value="30" min="0" max="100" oninput="syncAlloc()">
         <div class="alloc-pct">%</div>
       </div>
       <div class="alloc-row">
         <div class="alloc-dot" style="background:#10b981"></div>
         <div class="alloc-name">S&P500</div>
-        <input class="alloc-inp" id="alloc-sp500" type="number" value="35" min="0" max="100" oninput="syncAlloc()">
+        <input class="alloc-inp" id="alloc-sp500" type="number" value="40" min="0" max="100" oninput="syncAlloc()">
         <div class="alloc-pct">%</div>
       </div>
       <div class="alloc-row">
         <div class="alloc-dot" style="background:#f59e0b"></div>
         <div class="alloc-name">배당다우존스</div>
-        <input class="alloc-inp" id="alloc-div" type="number" value="25" min="0" max="100" oninput="syncAlloc()">
-        <div class="alloc-pct">%</div>
-      </div>
-      <div class="alloc-row">
-        <div class="alloc-dot" style="background:#a855f7"></div>
-        <div class="alloc-name">빅테크TOP7</div>
-        <input class="alloc-inp" id="alloc-bigtech" type="number" value="15" min="0" max="100" oninput="syncAlloc()">
+        <input class="alloc-inp" id="alloc-div" type="number" value="30" min="0" max="100" oninput="syncAlloc()">
         <div class="alloc-pct">%</div>
       </div>
       <div style="font-size:10px;color:var(--muted);text-align:right" id="alloc-sum-txt">합계: 100%</div>
@@ -1026,7 +1029,7 @@ function renderSimulate(){
 }
 
 function syncAlloc(){
-  const sum=['nasdaq','sp500','div','bigtech'].reduce((s,k)=>s+(parseInt(document.getElementById('alloc-'+k).value)||0),0);
+  const sum=['nasdaq','sp500','div'].reduce((s,k)=>s+(parseInt(document.getElementById('alloc-'+k).value)||0),0);
   const el=document.getElementById('alloc-sum-txt');
   el.textContent=`합계: ${sum}%`;
   el.style.color=sum===100?'var(--pos)':'var(--neg)';
@@ -1039,9 +1042,8 @@ function runSimulate(){
     nasdaq:(parseInt(document.getElementById('alloc-nasdaq').value)||0)/100,
     sp500: (parseInt(document.getElementById('alloc-sp500').value)||0)/100,
     div:   (parseInt(document.getElementById('alloc-div').value)||0)/100,
-    bigtech:(parseInt(document.getElementById('alloc-bigtech').value)||0)/100,
   };
-  const sum=alloc.nasdaq+alloc.sp500+alloc.div+alloc.bigtech;
+  const sum=alloc.nasdaq+alloc.sp500+alloc.div;
   if(Math.round(sum*100)!==100){
     document.getElementById('sim-result').innerHTML=
       `<div style="color:var(--neg);font-size:12px;font-weight:700;padding:8px">⚠️ 비중 합계가 100%가 되어야 합니다 (현재 ${Math.round(sum*100)}%)</div>`;
@@ -1205,16 +1207,16 @@ function runSimulate(){
 
 // ── 탭4: 추천비중 ───────────────────────────
 const AGE_PROFILES=[
-  {label:'20대',age:'20~29세',alloc:{nasdaq:40,sp500:25,div:15,bigtech:20},risk:'공격형',period:'30년+',
-   reason:'투자 기간이 30~40년 이상. 하락장을 여러 번 회복할 시간이 충분합니다. 나스닥100과 빅테크TOP7으로 장기 성장을 극대화하세요. 배당다우존스는 변동성 완충 역할.'},
-  {label:'30대',age:'30~39세',alloc:{nasdaq:35,sp500:30,div:20,bigtech:15},risk:'성장형',period:'20~30년',
-   reason:'결혼·자녀·주택 등 큰 지출이 생기지만 여전히 장기 투자 가능. 나스닥+빅테크 성장 비중 유지하되 S&P500으로 분산 강화. 배당은 현금흐름 안정화.'},
-  {label:'40대',age:'40~49세',alloc:{nasdaq:25,sp500:35,div:30,bigtech:10},risk:'균형형',period:'15~20년',
+  {label:'20대',age:'20~29세',alloc:{nasdaq:50,sp500:30,div:20},risk:'공격형',period:'30년+',
+   reason:'투자 기간이 30~40년 이상. 하락장을 여러 번 회복할 시간이 충분합니다. 나스닥100 비중을 높여 장기 성장을 극대화하세요. 배당다우존스는 변동성 완충 역할.'},
+  {label:'30대',age:'30~39세',alloc:{nasdaq:40,sp500:35,div:25},risk:'성장형',period:'20~30년',
+   reason:'결혼·자녀·주택 등 큰 지출이 생기지만 여전히 장기 투자 가능. 나스닥 비중 유지하되 S&P500으로 분산 강화. 배당은 현금흐름 안정화.'},
+  {label:'40대',age:'40~49세',alloc:{nasdaq:30,sp500:40,div:30},risk:'균형형',period:'15~20년',
    reason:'은퇴까지 약 15~20년. 성장과 안정의 균형점. S&P500을 중심축으로, 배당다우존스 비중을 점차 늘려 하락장 방어력을 높이세요.'},
-  {label:'50대',age:'50~59세',alloc:{nasdaq:15,sp500:35,div:45,bigtech:5},risk:'안정형',period:'10~15년',
-   reason:'은퇴 준비 단계. 자산 보존과 현금흐름이 중요. 배당다우존스를 주력으로 월배당 수입 확보. 나스닥·빅테크 비중을 줄여 변동성 리스크를 낮추세요.'},
-  {label:'60대+',age:'60세 이상',alloc:{nasdaq:5,sp500:30,div:60,bigtech:5},risk:'보수형',period:'5~10년',
-   reason:'배당 현금흐름 최우선. 배당다우존스 월배당으로 생활비 일부 충당. S&P500으로 인플레이션 방어. 나스닥·빅테크는 소량만 유지.'},
+  {label:'50대',age:'50~59세',alloc:{nasdaq:20,sp500:35,div:45},risk:'안정형',period:'10~15년',
+   reason:'은퇴 준비 단계. 자산 보존과 현금흐름이 중요. 배당다우존스를 주력으로 월배당 수입 확보. 나스닥 비중을 줄여 변동성 리스크를 낮추세요.'},
+  {label:'60대+',age:'60세 이상',alloc:{nasdaq:10,sp500:30,div:60},risk:'보수형',period:'5~10년',
+   reason:'배당 현금흐름 최우선. 배당다우존스 월배당으로 생활비 일부 충당. S&P500으로 인플레이션 방어. 나스닥은 소량만 유지.'},
 ];
 
 function renderRecommend(){
@@ -1235,8 +1237,8 @@ function showAgeProfile(idx, el){
   document.querySelectorAll('.age-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
   const p=AGE_PROFILES[idx];
-  const alloc={nasdaq:p.alloc.nasdaq, sp500:p.alloc.sp500, div:p.alloc.div, bigtech:p.alloc.bigtech};
-  const barSegs=ETF_KEYS.map(k=>`<div class="rec-seg" style="flex:${alloc[k]};background:${ETF_COLORS[k]}">${alloc[k]>=12?alloc[k]+'%':''}</div>`).join('');
+  const alloc={nasdaq:p.alloc.nasdaq, sp500:p.alloc.sp500, div:p.alloc.div};
+  const barSegs=ETF_KEYS.map(k=>`<div class="rec-seg" style="flex:${alloc[k]};background:${ETF_COLORS[k]}">${alloc[k]>=15?alloc[k]+'%':''}</div>`).join('');
   const items=ETF_KEYS.map(k=>`<div class="rec-item">
     <div class="rec-dot" style="background:${ETF_COLORS[k]}"></div>
     <div class="rec-name">${ETF_LABELS[k]}</div>
@@ -1306,7 +1308,11 @@ async function fetchPrices(){
     isLive = true;
     lastUpdated = data.updated||'';
     recalcRender();
-    setBar('ok',`✅ 업데이트 완료 · USD/KRW: ${Math.round(usdkrw).toLocaleString()}원`,`마지막: ${lastUpdated}`);
+    // 수신 가격 샘플 표시 (확인용)
+    const sample = ['AAPL','TSLA','GOOGL','133690','360750']
+      .filter(k=>data.prices&&data.prices[k]!=null)
+      .map(k=>`${k}:${data.prices[k]}`).join(' · ');
+    setBar('ok',`✅ 업데이트 완료 · USD/KRW: ${Math.round(usdkrw).toLocaleString()}원`,`${lastUpdated} | ${sample}`);
     btn.disabled=false;
     btn.innerHTML='🔄 현재가 업데이트';
   });
@@ -1371,9 +1377,12 @@ function saveUrl(){
 // 초기화
 // ═══════════════════════════════════════════
 window.addEventListener('load',()=>{
+  // 저장된 수량 먼저 메모리에 로드
+  loadQty();
   // 이미 알고 있는 URL 자동 저장
-  const knownUrl = 'https://script.google.com/macros/s/AKfycbxsZjYDWx3RLp4XLcKzo_u9VnWpWmop3IXEA7dGFhbMoqZlVRbIgGd3O9fYmcsaDMCN/exec';
-  if(!localStorage.getItem(URL_KEY)) localStorage.setItem(URL_KEY, knownUrl);
+  const knownUrl = 'https://script.google.com/macros/s/AKfycbx_2CAHMEe6qy4RF2oy9aN7JpM0GtJJQ0j0MaN-67JB5--ghmYYjnCW5uetaiFuYZuU/exec';
+  // 항상 최신 URL로 갱신
+  localStorage.setItem(URL_KEY, knownUrl);
   const saved=localStorage.getItem(URL_KEY);
   setBar('idle','Apps Script 연결됨 · 🔄 현재가 업데이트를 눌러주세요', saved.slice(0,55)+'…');
   recalcRender();
