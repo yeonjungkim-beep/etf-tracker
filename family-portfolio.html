@@ -454,8 +454,10 @@ let lastUpdated = '';
 // ═══════════════════════════════════════════
 // 수량 저장/불러오기
 // ═══════════════════════════════════════════
-const QTY_KEY = 'fam_qty_v2';
-const URL_KEY = 'fam_gas_url';
+const QTY_KEY    = 'fam_qty_v2';
+const URL_KEY    = 'fam_gas_url';
+const PRICES_KEY = 'fam_prices_v1';
+const META_KEY   = 'fam_meta_v1';
 
 // 인메모리 qty 맵 — localStorage와 항상 동기화
 let qtyMap = {};
@@ -1307,6 +1309,9 @@ async function fetchPrices(){
     usdkrw = prices['USDKRW']||1471;
     isLive = true;
     lastUpdated = data.updated||'';
+    // 현재가 localStorage에 저장 → 새로고침 후에도 유지
+    localStorage.setItem(PRICES_KEY, JSON.stringify(prices));
+    localStorage.setItem(META_KEY, JSON.stringify({usdkrw, lastUpdated, isLive:true}));
     recalcRender();
     // 수신 가격 샘플 표시 (확인용)
     const sample = ['AAPL','TSLA','GOOGL','133690','360750']
@@ -1379,15 +1384,29 @@ function saveUrl(){
 window.addEventListener('load',()=>{
   // 저장된 수량 먼저 메모리에 로드
   loadQty();
+  // 저장된 현재가 복원 → 새로고침 후에도 마지막 업데이트 가격 유지
+  try{
+    const savedPrices = JSON.parse(localStorage.getItem(PRICES_KEY));
+    const savedMeta   = JSON.parse(localStorage.getItem(META_KEY));
+    if(savedPrices){ Object.assign(prices, savedPrices); }
+    if(savedMeta){
+      usdkrw = savedMeta.usdkrw || usdkrw;
+      lastUpdated = savedMeta.lastUpdated || '';
+      isLive = savedMeta.isLive || false;
+    }
+  }catch(e){}
   // 이미 알고 있는 URL 자동 저장
   const knownUrl = 'https://script.google.com/macros/s/AKfycbx_2CAHMEe6qy4RF2oy9aN7JpM0GtJJQ0j0MaN-67JB5--ghmYYjnCW5uetaiFuYZuU/exec';
   // 항상 최신 URL로 갱신
   localStorage.setItem(URL_KEY, knownUrl);
   const saved=localStorage.getItem(URL_KEY);
-  setBar('idle','Apps Script 연결됨 · 🔄 현재가 업데이트를 눌러주세요', saved.slice(0,55)+'…');
+  if(isLive && lastUpdated){
+    setBar('ok', `✅ 저장된 시세 복원 · USD/KRW: ${Math.round(usdkrw).toLocaleString()}원`, `마지막 업데이트: ${lastUpdated}`);
+  } else {
+    setBar('idle','Apps Script 연결됨 · 🔄 현재가 업데이트를 눌러주세요', saved.slice(0,55)+'…');
+  }
   recalcRender();
 });
 </script>
 </body>
 </html>
-
