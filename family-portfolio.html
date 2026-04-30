@@ -389,8 +389,8 @@ body{background:var(--bg);font-family:'Noto Sans KR',sans-serif;color:var(--text
 const PORTFOLIO = {
   sooyul: {
     domestic:{ label:'국내 종합', badge:'b-dom', accountId:'7083658088-01', stocks:[
-      {id:'sy_d1', name:'한솔테크닉스',        ticker:'096760', type:'KR', qty:17,  avgPrice:9114},
-      {id:'sy_d2', name:'NAVER',               ticker:'035420', type:'KR', qty:20,  avgPrice:241588},
+      {id:'sy_d1', name:'한솔테크닉스',        ticker:'096760', type:'KR', qty:17,  avgPrice:9220},
+      {id:'sy_d2', name:'NAVER',               ticker:'035420', type:'KR', qty:20,  avgPrice:242914},
       {id:'sy_d3', name:'TIGER 미국나스닥100',  ticker:'133690', type:'KR', qty:10,  avgPrice:158204},
       {id:'sy_d4', name:'TIGER 미국S&P500',    ticker:'360750', type:'KR', qty:65,  avgPrice:23818},
       {id:'sy_d5', name:'TIGER 미국배당다우존스',ticker:'458730', type:'KR', qty:139, avgPrice:12462},
@@ -1442,8 +1442,9 @@ async function fetchPrices(){
   btn.innerHTML='<span class="spin">⏳</span> 업데이트 중…';
   setBar('loading','⏳ 현재가 불러오는 중…','Google Sheets에서 가격 데이터를 가져오고 있습니다');
 
-  // JSONP 방식으로 CSP 우회
-  jsonpFetch(url, function(data){
+  // action=refresh → Apps Script가 새로 시세 수집 후 반환
+  const refreshUrl = url + (url.includes('?') ? '&' : '?') + 'action=refresh';
+  jsonpFetch(refreshUrl, function(data){
     if(!data || data.error){
       setBar('err','❌ 실패: '+(data&&data.error||'응답 없음'),'Apps Script 배포 설정을 확인해주세요');
       btn.disabled=false;
@@ -1543,7 +1544,7 @@ window.addEventListener('load',()=>{
     }
   }catch(e){}
   // 이미 알고 있는 URL 자동 저장
-  const knownUrl = 'https://script.google.com/macros/s/AKfycbxemcJrB3kWBOfdIg99nEs4P1qcbLHAHFliJnUfRHZwijXd09s5-ur-jjl3seDEVV8/exec';
+  const knownUrl = 'https://script.google.com/macros/s/AKfycbw1jXxtB2APtKX6AHzBjxHqBlak3iqYusMbh_23_NxFQsYIz14HfilOR07NfR1U68D9/exec';
   // 항상 최신 URL로 갱신
   localStorage.setItem(URL_KEY, knownUrl);
   const saved=localStorage.getItem(URL_KEY);
